@@ -1,0 +1,9 @@
+#! /bin/bash
+
+DESCRIPTOR=$1
+
+# Scan all udev files, show only matching udev
+for file in /dev/char/*
+do
+     echo $file $( udevadm info -q path -n $file ) |grep $DESCRIPTOR
+done
