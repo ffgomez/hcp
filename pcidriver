@@ -1,0 +1,117 @@
+#! /bin/bash
+# Modify with drivers
+BLACK_LIST="nvidia catalyst"
+
+# Load arguments
+PCI_BUS=$( echo "0000:$1" )
+TARGET_DRIVER=$2
+
+## Checking amount of arguments
+function check_arguments_number {
+if [[ $1 -ne 2 ]]; then
+     echo "Please provide the proper arguments. Ie: # $0 01:00.0 driver/info $#"
+     exit 2
+fi }
+
+## Checking if the PCI_BUS exist
+function check_pci_bus_exists {
+if [[ ! -e /sys/bus/pci/devices/$PCI_BUS ]]; then
+     echo "PCI bus $PCI_BUS doesn't exist. Please check 'lspci' to check the appropriate bus in form of XX:XX.X"
+     exit 2
+fi }
+
+## Reading the loaded driver in the PCI bus
+function read_loaded_driver {
+CURRENT_DRIVER=0
+if [[ -e /sys/bus/pci/devices/$PCI_BUS/uevent ]]; then
+     CURRENT_DRIVER=$(cat "/sys/bus/pci/devices/$PCI_BUS/uevent" |grep DRIVER | cut -d "=" -f2)
+fi }
+
+## Checking if the option "info" was provided instead of a driver
+function check_info_option {
+if [[ $TARGET_DRIVER == info ]]; then
+     if [[ $CURRENT_DRIVER != 0 ]]; then
+          echo "$CURRENT_DRIVER driver is used by the pci bus $PCI_BUS"
+          exit 0
+     else
+          echo "No driver loaded in $PCI_BUS"
+          exit 0
+     fi
+fi }
+
+## Checking if the driver was already loaded
+function check_driver_already_loaded {
+if [[ $CURRENT_DRIVER == $TARGET_DRIVER ]]; then
+     echo "The driver $TARGET_DRIVER was already loaded in $PCI_BUS"
+     exit 1
+fi }
+
+## Checking if the target driver is one of the candidates
+function check_driver_candidate {
+
+# create an array upon the modules + vfio
+CANDIDATES="$(lspci -ks $PCI_BUS | grep modules | tr -d " " | cut -d ":" -f2),vfio-pci"
+CANDIDATE=(${CANDIDATES//,/ })
+CANDIDATE_MATCH=0
+
+# Compare all the candidates with the target driver
+for i in "${!CANDIDATE[@]}"; do
+        if [[ ${CANDIDATE[i]} == $TARGET_DRIVER ]]; then
+                CANDIDATE_MATCH=1
+        fi
+done
+if [[ $CANDIDATE_MATCH != 1 ]]; then
+        echo "Can't load $TARGET_DRIVER in $PCI_BUS as it does not match"
+        echo "The candidate drivers are $CANDIDATES"
+        exit 2
+fi
+}
+
+## Checking if the requested and current driver is not in the black list
+function check_module_no_blacklist {
+for BLACK_DRIVER in "$@"; do
+        if [[ $TARGET_DRIVER == $BLACK_DRIVER ]]; then
+                echo "The target driver $TARGET_DRIVER is blacklisted and shouldn't be used with this script"
+                exit 1
+        fi
+        if [[ $BLACK_DRIVER == $CURRENT_DRIVER ]]; then
+                echo "The current driver $CURRENT_DRIVER is blacklisted and should't be replaced with this script"
+                exit 1
+        fi
+
+done }
+
+## Changing the driver
+function change_pci_driver {
+modprobe $TARGET_DRIVER
+VENDOR=$(cat /sys/bus/pci/devices/$PCI_BUS/vendor)
+DEVICE=$(cat /sys/bus/pci/devices/$PCI_BUS/device)
+if [ -e /sys/bus/pci/devices/$PCI_BUS/driver ]; then
+        echo $PCI_BUS > /sys/bus/pci/devices/$PCI_BUS/driver/unbind
+fi
+echo $VENDOR $DEVICE > /sys/bus/pci/drivers/$TARGET_DRIVER/new_id
+
+# Not working line
+#if [ -e /sys/bus/pci/drivers/$TARGET_DRIVER/bind ]; then
+#       echo $PCI_BUS /sys/bus/pci/drivers/$TARGET_DRIVER/bind
+#fi
+echo $VENDOR $DEVICE > /sys/bus/pci/drivers/$TARGET_DRIVER/remove_id
+echo "Changing $PCI_BUS device to $TARGET_DRIVER driver"
+}
+
+
+## Main Loop
+
+# Lots of check to ensure that we don't break anything
+# Follow the functions, if they are NOK the loop will be broken
+
+check_arguments_number $#
+check_pci_bus_exists
+read_loaded_driver
+check_info_option
+check_driver_already_loaded
+check_driver_candidate
+check_module_no_blacklist $BLACK_LIST
+
+# Once we are sure that the driver is OK lets change it
+change_pci_driver
