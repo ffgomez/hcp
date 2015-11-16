@@ -1,0 +1,130 @@
+#! /bin/bash
+## Parses the config file for zones provided and creates a fancontrol temperature
+## file per zone like /var/log/zonetemp/zone.temp
+
+# Remove all previosly defined zones
+mkdir -p /var/log/zonetemp
+rm /var/log/zonetemp/*
+
+#Check if is provided an argument,
+if [ $# -eq 0 ]; then
+    echo "Error: No config file provided"
+    exit 1
+fi
+
+CONFIG=$1
+
+for zones in $(awk '/\[.*\]/' $1|tr -d []); do
+
+        # parsing the config file taking the relevant config per zone
+        disks=$(awk -v zone=$zones -F "=" '/^\[/ {local=$1; gsub("[][]","",local)} local == zone && $1 =="DISKS" {print $2}'  $CONFIG)
+        cpu=$(awk -v zone=$zones -F "=" '/^\[/ {local=$1; gsub("[][]","",local)} local == zone && $1 =="CPU" {print $2}'  $CONFIG)
+        gpu=$(awk -v zone=$zones -F "=" '/^\[/ {local=$1; gsub("[][]","",local)} local == zone && $1 =="GPU" {print $2}'  $CONFIG)
+
+        # take the top temperature and put in a file named zone.$zones
+        ( /usr/local/bin/zhddtemp $disks & /usr/local/bin/zgputemp $gpu & /usr/local/bin/zcputemp $cpu ) |sort -r |head -n 1 >> /var/log/zonetemp/zone.$zones
+done
+
+
+
+
+#! /bin/bash
+
+#writes the GPU temperature in a file to be read by fancontrol program
+
+nvidia-smi -q -d TEMPERATURE |grep Current | cut -d ":" -f2 |cut -d " " -f2 |  awk '{print $1*1000}' > /var/log/gputemp
+
+
+
+
+
+#! /bin/bash
+
+#writes the GPU temperature in a file to be read by fancontrol program
+
+nvidia-smi -q -d TEMPERATURE |grep Current | cut -d ":" -f2 |cut -d " " -f2 |  awk '{print $1*1000}' > /var/log/gputemp
+[pichonbot@nexus bin]$ cat hddMaxTemp
+#! /bin/bash
+
+# Providing the disks in form of sdX, for a disk, of sd[a b j] or sd? for all the disks
+# this script will write the maximum temperature value of the selected disks into a readeable
+# file for "fancontrol" in /var/log/hddtemp
+
+hddtemp -qn /dev/$1| sort -r | head -n 1 |  awk '{print $1*1000}' > /var/log/hddtemp
+
+
+
+
+
+
+#! /bin/bash
+
+## Outputs the maximum temperature of the provided disks in the fancontrol format
+## usage: zcputemp YES
+## any argument will work, leave for future options
+## if no argument is provided the output will be 0
+
+#Check if is provided an argument, if not give 0 as temperature
+if [ $# -eq 0 ]; then
+    echo "0"
+    exit 1
+fi
+# Checks the maximum temperature of all the sensors
+(cat /sys/class/hwmon/hwmon?/device/temp?_input && cat /sys/class/hwmon/hwmon?/temp?_input) |sort -r |head -n 1
+
+
+
+
+
+
+
+
+
+
+#! /bin/bash
+
+## Outputs the maximum temperature of the provided disks in the fancontrol format
+## usage: zgputemp vendor:device
+## any argument will work, leave for future options
+## if no argument is provided the output will be 0
+
+#Check if is provided an argument, if not give 0 as temperature
+if [ $# -eq 0 ]; then
+    echo "0"
+    exit 1
+fi
+
+# check if the nvidia driver is loaded for the appropiate card and provide temperature. Else it will show 70
+if [ $(lspci -k -d $1 |grep "Kernel driver" |cut -d ":" -f2| cut -d " " -f2) == nvidia ]; then
+     nvidia-smi -q -d TEMPERATURE |grep Current | cut -d ":" -f2 |cut -d " " -f2 | awk '{print $1*1000}'
+else
+     echo "70000"
+fi
+
+
+
+
+
+
+#! /bin/bash
+
+## Outputs the maximum temperature of the provided disks in the fancontrol format
+## usage: zhddtemp sda sdc sdj
+## if no disk provide the output will be 0
+
+#Check if disk is provided as argument, if not give 0 as temperature
+if [ $# -eq 0 ]; then
+    echo "0"
+    exit 1
+fi
+
+
+# Checks the maximum temperature for the disks provided
+temperature=1
+for disk in "$@"; do
+        if [ "$(/usr/bin/hddtemp -qn /dev/$disk)" -gt "$temperature" ]
+        then
+                temperature=$(/usr/bin/hddtemp -qn /dev/$disk)
+        fi
+done
+echo $temperature| awk '{print $1*2000}'
