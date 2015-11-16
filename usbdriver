@@ -1,0 +1,54 @@
+#! /bin/bash
+
+# Checking arguments
+if [[ $# -lt 2 ]]; then
+     echo "Please provide the proper arguments. Ie: # usbdriver VEND PROD autobind/unbind/info"
+     exit 1
+fi
+
+# Checking all usb decives
+for BUS in /sys/bus/usb/devices/*\:*
+     do
+        if [[ -e $BUS/uevent ]]; then
+                DEVICE=$(cat $BUS/uevent |grep PRODUCT |cut -d "=" -f2)
+                TARGET=$((10#$1))\/$((10#$2))\/*
+
+                # Find the bus path matching the vendor/product
+                if [[ $DEVICE == $TARGET ]]; then
+                        DRIVER=$(cat $BUS/uevent |grep DRIVER |cut -d "=" -f2)
+
+                        # Parse the third argument to know what to do
+                        case $3 in
+                        unbind)
+                                if [[ -e $BUS/driver/unbind ]]; then
+                                        echo Unbinding $(lsusb -d $1:$2)
+                                        echo $BUS |cut -d "/" -f6 > $BUS/driver/unbind
+                                else
+                                        echo $(lsusb -d $1:$2) was already unbound
+                                fi
+                                ;;
+
+                        autobind)
+                                if [[ ! -e $BUS/driver/bind ]]; then
+                                        echo $BUS |cut -d "/" -f6 > /sys/bus/usb/drivers_probe
+                                        echo Binding $(lsusb -d $1:$2) as $(cat $BUS/uevent |grep DRIVER |cut -d "=" -f2)
+                                else
+                                        echo $(lsusb -d $1:$2) was already bound
+                                fi
+                                ;;
+
+                        info)
+                                echo $(lsusb -d $1:$2)
+                                echo $BUS
+                                echo $DRIVER
+                                ;;
+                        esac
+
+
+#                       echo $(lsusb -d $1:$2)
+#                       echo $BUS
+#                       echo $DRIVER
+                fi
+        fi
+done
+
