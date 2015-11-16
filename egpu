@@ -1,0 +1,51 @@
+#! /bin/bash
+# Modify with drivers
+MIDDLE_DRIVER="nouveau"
+
+# Load arguments
+PCI_BUS="01:00.0"
+TARGET_DRIVER=$1
+CURRENT_DRIVER=0
+
+## Checking amount of arguments
+function check_arguments_number {
+if [[ $1 -ne 1 ]]; then
+     echo "Please provide the proper arguments. Ie: # $0 nvidia/vfio-pci"
+     exit 2
+fi }
+
+## Reading the loaded driver in the PCI bus
+function read_loaded_driver {
+if [[ -e /sys/bus/pci/devices/0000\:$PCI_BUS/uevent ]]; then
+     CURRENT_DRIVER=$(cat "/sys/bus/pci/devices/0000:$PCI_BUS/uevent" |grep DRIVER | cut -d "=" -f2)
+fi }
+
+## Checking if the driver was already loaded
+function check_driver_already_loaded {
+if [[ $CURRENT_DRIVER == $TARGET_DRIVER ]]; then
+     echo "The driver $TARGET_DRIVER was already loaded in $PCI_BUS"
+     exit 1
+fi }
+
+function change_egpu_driver {
+if [[ $CURRENT_DRIVER == vfio-pci ]]; then
+        /usr/local/bin/pcidriver $PCI_BUS $MIDDLE_DRIVER
+        rmmod $MIDDLE_DRIVER
+        modprobe $TARGET_DRIVER
+fi
+if [[ $CURRENT_DRIVER == nvidia ]]; then
+        rmmod nvidia
+        modprobe $MIDDLE_DRIVER
+        /usr/local/bin/pcidriver $PCI_BUS $TARGET_DRIVER
+fi }
+
+## Main Loop
+
+# Lots of check to ensure that we don't break anything
+# Follow the functions, if they are NOK the loop will be broken
+
+check_arguments_number $#
+read_loaded_driver
+check_driver_already_loaded
+# Once we are sure that the driver is OK lets change it
+change_egpu_driver
