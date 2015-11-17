@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# All the exceptions will come in the following order
+#/usr/local/bin/pcidriver.exception/$EXCEPTION $PCI_BUS $CURRENT_DRIVER $TARGET_DRIVER
+# all the checks were done by pcidriver scripts
+
+
+PCI_BUS=$(echo $1|cut -c 6-)
+CURRENT_DRIVER=$2
+TARGET_DRIVER=$3
+
+MIDDLE_DRIVER=nouveau
+
+
+
+if [[ $CURRENT_DRIVER == nvidia ]] ; then
+	rmmod $CURRENT_DRIVER
+	modprobe $MIDDLE_DRIVER
+	/usr/local/bin/pcidriver $PCI_BUS $TARGET_DRIVER
+else
+	/usr/local/bin/pcidriver $PCI_BUS $MIDDLE_DRIVER
+	rmmod $MIDDLE_DRIVER
+	modprobe $TARGET_DRIVER
+fi
