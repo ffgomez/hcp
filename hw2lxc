@@ -36,7 +36,7 @@ fi }
 function generate_temp_config {
 rm -f $LXC_PATH/$TARGET_LXC/autodev.temp $LXC_PATH/$TARGET_LXC/config.temp
 for dev in $HW_ACCESS; do
-         create_hw.temp $dev $LXC_PATH/$TARGET_LXC
+         create_hw.temp $dev
 done
 }
 
@@ -66,7 +66,6 @@ fi }
 
 function create_hw.temp {
 DESCRIPTOR=$1
-LXC_PATH=$2
 for dev_candidate in /dev/char/*
 do
         if [[ "echo $( udevadm info -q path -n $dev_candidate )" == *$DESCRIPTOR* ]]; then
@@ -78,9 +77,9 @@ do
 
                 check_dev_type
 
-                echo "mkdir -p $DEVTYPE" >> $LXC_PATH/autodev.temp
-                echo "mknod -m 0666 $DEVTYPE/$DEVNAME c $MAJOR $MINOR" >> $LXC_PATH/autodev.temp
-                echo "lxc.cgroup.devices.allow = c $MAJOR:$MINOR rwm # $DEVNAME" >> $LXC_PATH/config.temp
+                echo "mkdir -p $DEVTYPE" >> $LXC_PATH/$TARGET_LXC/autodev.temp
+                echo "mknod -m 0666 $DEVTYPE/$DEVNAME c $MAJOR $MINOR" >> $LXC_PATH/$TARGET_LXC/autodev.temp
+                echo "lxc.cgroup.devices.allow = c $MAJOR:$MINOR rwm # $DEVNAME" >> $LXC_PATH/$TARGET_LXC/config.temp
         fi
 done }
 
