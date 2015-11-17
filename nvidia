@@ -21,4 +21,5 @@ else
 	/usr/local/bin/pcidriver $PCI_BUS $MIDDLE_DRIVER
 	rmmod $MIDDLE_DRIVER
 	modprobe $TARGET_DRIVER
+	echo "Changing driver to $TARGET_DRIVER"	
 fi
