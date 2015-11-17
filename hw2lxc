@@ -1,0 +1,95 @@
+TARGET_LXC=$1
+LXC_PATH=/var/lib/lxc
+
+function check_arguments_number {
+if [[ $1 -ne 1 ]]; then
+     echo "Please provide the proper arguments. Ie: # $0 lxc_name"
+     exit 2
+fi }
+
+function check_hw_config_file {
+if [[ ! -e $LXC_PATH/$TARGET_LXC ]]; then
+     echo "$TARGET_LXC lxc doesn't exist"
+     exit 2
+fi
+if [[ ! -e $LXC_PATH/$TARGET_LXC/hwconfig.cfg ]]; then
+     echo "$TARGET_LXC lxc doesn't contain hwconfig.cfg"
+     exit 2
+fi
+source $LXC_PATH/$TARGET_LXC/hwconfig.cfg
+}
+
+function remove_previous_hw_config {
+TOP_MARKER='### BEGIN GENERATED CONTENT'
+BOTTOM_MARKER='### END GENERATED CONTENT'
+
+# Check markers in the autodev and config, if exist delete the content
+
+if grep -q "$TOP_MARKER" $LXC_PATH/$TARGET_LXC/autodev ; then
+        sed -i "/$TOP_MARKER/,/$BOTTOM_MARKER/d"  $LXC_PATH/$TARGET_LXC/autodev
+fi
+
+if grep -q "$TOP_MARKER" $LXC_PATH/$TARGET_LXC/config ; then
+        sed -i "/$TOP_MARKER/,/$BOTTOM_MARKER/d" $LXC_PATH/$TARGET_LXC/config
+fi }
+
+function generate_temp_config {
+rm -f $LXC_PATH/$TARGET_LXC/autodev.temp $LXC_PATH/$TARGET_LXC/config.temp
+for dev in $HW_ACCESS; do
+         create_hw.temp $dev $LXC_PATH/$TARGET_LXC
+done
+}
+
+function include_config {
+echo $TOP_MARKER >> $LXC_PATH/$TARGET_LXC/autodev
+cat $LXC_PATH/$TARGET_LXC/autodev.temp >> $LXC_PATH/$TARGET_LXC/autodev
+echo $BOTTOM_MARKER >> $LXC_PATH/$TARGET_LXC/autodev
+
+echo $TOP_MARKER >> $LXC_PATH/$TARGET_LXC/config
+cat  $LXC_PATH/$TARGET_LXC/config.temp >> $LXC_PATH/$TARGET_LXC/config
+echo $BOTTOM_MARKER >> $LXC_PATH/$TARGET_LXC/config
+}
+
+function check_dev_type {
+if [[ $DEVPATH == *drm* ]]; then
+        DEVTYPE=dri
+fi
+if [[ $DEVPATH == *sound* ]]; then
+        DEVTYPE=snd
+fi
+if [[ $DEVPATH == *input* ]]; then
+        DEVTYPE=input
+fi
+if [[ $DEVPATH == *tty* ]]; then
+        DEVTYPE=.
+fi }
+
+function create_hw.temp {
+DESCRIPTOR=$1
+LXC_PATH=$2
+for dev_candidate in /dev/char/*
+do
+        if [[ "echo $( udevadm info -q path -n $dev_candidate )" == *$DESCRIPTOR* ]]; then
+
+                MAJOR="$(echo $dev_candidate |cut -d "/" -f4 |cut -d ":" -f1)"
+                MINOR="$(echo $dev_candidate |cut -d "/" -f4 |cut -d ":" -f2)"
+                DEVPATH="$( udevadm info -q path -n $dev_candidate )"
+                DEVNAME="$(echo $DEVPATH | grep -oE "[^/]+$" )"
+
+                check_dev_type
+
+                echo "mkdir -p $DEVTYPE" >> $LXC_PATH/autodev.temp
+                echo "mknod -m 0666 $DEVTYPE/$DEVNAME c $MAJOR $MINOR" >> $LXC_PATH/autodev.temp
+                echo "lxc.cgroup.devices.allow = c $MAJOR:$MINOR rwm # $DEVNAME" >> $LXC_PATH/config.temp
+        fi
+done }
+
+
+
+
+## Main loop
+check_arguments_number $#
+check_hw_config_file
+remove_previous_hw_config
+generate_temp_config
+include_config
