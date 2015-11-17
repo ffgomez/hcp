@@ -1,6 +1,6 @@
 #! /bin/bash
 # Modify with drivers
-BLACK_LIST="nvidia catalyst"
+EXCEPTION_LIST="nvidia catalyst"
 
 # Load arguments
 PCI_BUS=$( echo "0000:$1" )
@@ -68,17 +68,16 @@ fi
 }
 
 ## Checking if the requested and current driver is not in the black list
-function check_module_no_blacklist {
-for BLACK_DRIVER in "$@"; do
-        if [[ $TARGET_DRIVER == $BLACK_DRIVER ]]; then
-                echo "The target driver $TARGET_DRIVER is blacklisted and shouldn't be used with this script"
-                exit 1
+function check_module_exception {
+for EXCEPTION in "$@"; do
+        if [[ $TARGET_DRIVER == $EXCEPTION ]] || [[ $CURRENT_DRIVER == $EXCEPTION ]]; then
+               if [[ ! -e /usr/local/bin/pcidriver.exception/$EXCEPTION]; then
+                    echo "The exception /usr/local/bin/pcidriver.exception/$EXCEPTION does not exist"
+                    echo "Leaving without changing the driver"
+               fi
+               /usr/local/bin/pcidriver.exception/$EXCEPTION $PCI_BUS $TARGET_DRIVER
+                exit 0
         fi
-        if [[ $BLACK_DRIVER == $CURRENT_DRIVER ]]; then
-                echo "The current driver $CURRENT_DRIVER is blacklisted and should't be replaced with this script"
-                exit 1
-        fi
-
 done }
 
 ## Changing the driver
@@ -111,7 +110,7 @@ read_loaded_driver
 check_info_option
 check_driver_already_loaded
 check_driver_candidate
-check_module_no_blacklist $BLACK_LIST
+check_module_exception $EXCEPTION_LIST
 
 # Once we are sure that the driver is OK lets change it
 change_pci_driver
