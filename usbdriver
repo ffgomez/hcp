@@ -2,53 +2,42 @@
 
 # Checking arguments
 if [[ $# -lt 2 ]]; then
-     echo "Please provide the proper arguments. Ie: # usbdriver VEND PROD autobind/unbind/info"
+     echo "Please provide the proper arguments. Ie: # usbdriver ID autobind/unbind/info"
      exit 1
 fi
 
-# Checking all usb decives
-for BUS in /sys/bus/usb/devices/*\:*
-     do
-        if [[ -e $BUS/uevent ]]; then
-                DEVICE=$(cat $BUS/uevent |grep PRODUCT |cut -d "=" -f2)
-                TARGET=$((10#$1))\/$((10#$2))\/*
+# Getting USB data
+USBID=$(echo `lsusb.py -U |grep $1`|cut -d " " -f2)
+BUSUSB=$(echo `lsusb.py -U |grep $1`|cut -d " " -f1)
 
-                # Find the bus path matching the vendor/product
-                if [[ $DEVICE == $TARGET ]]; then
-                        DRIVER=$(cat $BUS/uevent |grep DRIVER |cut -d "=" -f2)
+# Check if the USB exists
+if [[ ! -e /sys/bus/usb/devices/$BUSUSB/uevent ]]; then
+     echo The $1 is not a valid expresion for the USB, check lsusb.py as root
+     exit 1
+fi
 
-                        # Parse the third argument to know what to do
-                        case $3 in
-                        unbind)
-                                if [[ -e $BUS/driver/unbind ]]; then
-                                        echo Unbinding $(lsusb -d $1:$2)
-                                        echo $BUS |cut -d "/" -f6 > $BUS/driver/unbind
-                                else
-                                        echo $(lsusb -d $1:$2) was already unbound
-                                fi
-                                ;;
-
-                        autobind)
-                                if [[ ! -e $BUS/driver/bind ]]; then
-                                        echo $BUS |cut -d "/" -f6 > /sys/bus/usb/drivers_probe
-                                        echo Binding $(lsusb -d $1:$2) as $(cat $BUS/uevent |grep DRIVER |cut -d "=" -f2)
-                                else
-                                        echo $(lsusb -d $1:$2) was already bound
-                                fi
-                                ;;
-
-                        info)
-                                echo $(lsusb -d $1:$2)
-                                echo $BUS
-                                echo $DRIVER
-                                ;;
-                        esac
-
-
-#                       echo $(lsusb -d $1:$2)
-#                       echo $BUS
-#                       echo $DRIVER
-                fi
-        fi
-done
-
+# Parse the second argument
+case $2 in
+unbind)
+     if [[ -e /sys/bus/usb/devices/$BUSUSB/driver/unbind ]]; then
+          echo Unbinding $(lsusb -d $USBID)
+          echo $BUSUSB |cut -d "/" -f6 > /sys/bus/usb/devices/$BUSUSB/driver/unbind
+     else
+          echo $(lsusb -d $USBID) was already unbound
+     fi
+;;
+autobind)
+     if [[ ! -e /sys/bus/usb/devices/$BUSUSB/driver/bind ]]; then
+          echo $BUSUSB |cut -d "/" -f6 > /sys/bus/usb/drivers_probe
+          echo Binding $(lsusb -d $USBID) as $(cat /sys/bus/usb/devices/$BUSUSB/uevent |grep DRIVER |cut -d "=" -f2)
+     else
+          echo $(lsusb -d $USBID) was already bound
+     fi
+;;
+info)
+     echo $(lsusb -d $USBID)
+     echo Used USB port $BUSUSB
+     echo USB ID $USBID
+     findudev $BUSUSB
+;;
+esac
