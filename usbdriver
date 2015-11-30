@@ -6,7 +6,7 @@ if [[ $# -lt 2 ]]; then
      exit 1
 fi
 
-# Getting USB data
+# Getting USB data, using `to trimm the spaces
 USBID=$(echo `lsusb.py -U |grep $1`|cut -d " " -f2)
 BUSUSB=$(echo `lsusb.py -U |grep $1`|cut -d " " -f1)
 
