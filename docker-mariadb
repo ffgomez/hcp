@@ -1,0 +1,7 @@
+docker run --name alexandria		\
+	-e MYSQL_ROOT_PASSWORD=pass	\
+	-e MYSQL_USER=demiurgeWP	\
+	-e MYSQL_PASSWORD=pass2	\
+	-e MYSQL_DATABASE=demiurgeWP	\
+	-p 3306:3306			\
+	-d mariadb
