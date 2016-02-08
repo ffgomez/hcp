@@ -3,7 +3,7 @@ docker pull dperson/transmission
 docker run 
   --name transmission \
   -p 9091:9091 \
-  -e TRUSER=pichonbot -e TRPASSWD=amul0n \
+  -e TRUSER=pass -e TRPASSWD=pass \
 	-p 51413:51413 -p 51413:51413/udp \
 	-v /media/almacen/torrent/temp/torrents:/var/lib/transmission-daemon/info/torrents \
 	-v /media/almacen/torrent:/var/lib/transmission-daemon/downloads \
