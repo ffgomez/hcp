@@ -1,0 +1,7 @@
+docker run --name demiurgeprojectWP		\
+	-e WORDPRESS_DB_USER=demiurgeWP		\
+	-e WORDPRESS_DB_PASSWORD=passw0rd	\
+	-e WORDPRESS_DB_NAME=demiurgeWP		\
+	--link alexandria:mysql			\
+	-p 80:80				\
+	-d wordpress
