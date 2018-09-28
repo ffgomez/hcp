@@ -1,26 +1,20 @@
 version: '3'
 
 services:
-   db:
-     image: mysql:5.7
-     volumes:
-       - db_data:/var/lib/mysql
-     restart: always
-     environment:
-       MYSQL_ROOT_PASSWORD: ${MYSQL_DATABASE_PASSWORD}
-       MYSQL_DATABASE: wordpress
-       MYSQL_USER: wordpress
-       MYSQL_PASSWORD: wordpress
+    dnsmasq:
+        restart: always
+        image: strm/dnsmasq
+        network_mode: host
+        deploy:
+            replicas: 1        
+        configs:
+            - dnsmasq:/etc/dnsmasq.conf
+        ports:
+            - "53:53/udp"
+        cap_add:
+            - NET_ADMIN
 
-   wordpress:
-     image: wordpress:latest
-     ports:
-       - 80
-     restart: always
-     environment:
-       WORDPRESS_DB_HOST: db:3306
-       WORDPRESS_DB_USER: wordpress
-       WORDPRESS_DB_PASSWORD: wordpress
-
-volumes:
-    db_data:
+      
+configs:
+    dnsmasq:
+        file: ./dnsmasq.conf
