@@ -4,7 +4,6 @@ services:
     dnsmasq:
         restart: always
         image: strm/dnsmasq
-        network_mode: host
         deploy:
             replicas: 1        
         configs:
