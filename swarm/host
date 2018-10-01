@@ -1,0 +1,9 @@
+127.0.0.1         localhost
+
+### SWARM
+192.168.1.101 swarm swarm.local rpi1 rpi1.local
+192.168.1.102 swarm swarm.local rpi2 rpi2.local
+192.168.1.103 swarm swarm.local rpi3 rpi3.local
+192.168.1.104 swarm swarm.local rpi4 rpi4.local
+192.168.1.105 swarm swarm.local rpi5 rpi5.local
+192.168.1.106 swarm swarm.local rpi6 rpi6.local
