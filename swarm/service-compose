@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+    dns:
+        #restart: always
+        hostname: servicio.londres.casa
+        image: strm/dnsmasq
+        volumes:
+            - ./dnsmasq.conf:/etc/dnsmasq.conf
+        ports:
+            - "53:53/udp"
+        cap_add:
+            - NET_ADMIN
+        configs:
+            - my_config
+            - my_other_config
+configs:
+  my_config:
+    file: ./my_config.txt
+  my_other_config:
+    external: true
+    
+volumes:
