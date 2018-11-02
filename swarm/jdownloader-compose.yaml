@@ -1,0 +1,16 @@
+version: '3.6'
+
+services:
+  jdownloader:
+    image: aptalca/docker-jdownloader2
+    environment:
+      TZ: Europe/Madrid
+      HEIGHT: "720"
+      WIDTH: "1280"
+    ports:
+      - "8080:8080"
+    volumes:
+      - jdownloader_data:/config:rw
+
+volumes:
+  jdownloader_data:
