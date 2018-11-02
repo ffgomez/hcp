@@ -3,6 +3,7 @@ version: "3.3"
 services:
   rabbitmq:
     image: lovelysystems/rabbitmq-swarm-cluster
+    #hostname: "{{.Service.Name}}.{{.Task.Slot}}.{{.Task.ID}}"
     hostname: "rabbitmq.londres.casa"
     deploy:
       replicas: 2
