@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+  NodeRed:
+    image: "nodered/node-red-docker"
+    restart: always
+    deploy:
+      replicas: 1
+    ports:
+      - 1880:1880
+    volumes:
+      - "nodered_data:/openhab"
+
+volumes:
+  nodered_data:
