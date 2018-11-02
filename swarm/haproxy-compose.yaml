@@ -1,0 +1,22 @@
+version: '3.6'
+
+services:
+  HAProxy:
+    #image: haproxy
+    image: dockercloud/haproxy
+    environment:
+      TZ: Europe/Madrid
+      BALANCE: leastconn
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+        
+    #volumes:
+    #  - haproxy_data:/usr/local/etc/haproxy
+
+#volumes:
+#  haproxy_data:
