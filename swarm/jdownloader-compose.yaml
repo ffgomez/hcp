@@ -16,3 +16,4 @@ volumes:
  
  # Access through jdownloader web api (config neeeded)
  # docker exec jdownloader configure email@email.com password 
+ # https://my.jdownloader.org/index.html#dashboard
