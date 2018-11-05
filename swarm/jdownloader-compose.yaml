@@ -2,15 +2,17 @@ version: '3.6'
 
 services:
   jdownloader:
-    image: aptalca/docker-jdownloader2
+    image: jaymoulin/jdownloader
     environment:
       TZ: Europe/Madrid
-      HEIGHT: "720"
-      WIDTH: "1280"
-    ports:
-      - "8080:8080"
     volumes:
-      - jdownloader_data:/config:rw
+      - jdownloader_downloads:/root/Downloads
+      - jdownloader_config: /opt/JDownloader/cfg
 
 volumes:
-  jdownloader_data:
+  jdownloader_downloads:
+  jdownloader_config:
+ 
+ 
+ # Access through jdownloader web api (config neeeded)
+ # docker exec jdownloader configure email@email.com password 
