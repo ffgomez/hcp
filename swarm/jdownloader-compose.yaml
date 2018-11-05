@@ -1,14 +1,17 @@
-# Multi ARCH-docker
-# https://github.com/jaymoulin/docker-jdownloader 
-
 version: '3.6'
 
+# Multi ARCH-docker
+# https://github.com/jaymoulin/docker-jdownloader 
+## Access through jdownloader web api (config neeeded)
+## docker exec jdownloader configure email@email.com password 
+## https://my.jdownloader.org/index.html#dashboard
+ 
 services:
   jdownloader:
     image: jaymoulin/jdownloader
     hostname: jdownloader.londres.casa
-    depends_on:
-      - disco
+    #depends_on:
+      #- disco
     environment:
       TZ: Europe/Madrid
     volumes:
@@ -20,6 +23,4 @@ volumes:
   jdownloader_config:
  
  
- # Access through jdownloader web api (config neeeded)
- # docker exec jdownloader configure email@email.com password 
- # https://my.jdownloader.org/index.html#dashboard
+
