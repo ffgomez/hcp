@@ -1,7 +1,7 @@
 version: '3.6'
 
 services:
-  gDrive:
+  rclone:
     image: mumiehub/rclone-mount
     environment:
       TZ: Europe/Madrid
@@ -22,3 +22,17 @@ services:
 
 #volumes:
 #  haproxy_data:
+
+--allow-other \
+--read-only \
+--default-permissions \
+--uid 1000 \
+--gid 1000 \
+--umask 002 \
+--acd-templink-threshold 0 \
+--buffer-size 100M \
+--timeout 5s \
+--contimeout 5s \
+--syslog \
+--stats 1m \
+-v \
