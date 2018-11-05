@@ -6,6 +6,7 @@ version: '3.6'
 services:
   jdownloader:
     image: jaymoulin/jdownloader
+    hostname: jdownloader.londres.casa
     environment:
       TZ: Europe/Madrid
     volumes:
