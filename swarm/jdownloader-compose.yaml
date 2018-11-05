@@ -7,6 +7,8 @@ services:
   jdownloader:
     image: jaymoulin/jdownloader
     hostname: jdownloader.londres.casa
+    depends_on:
+      - disco
     environment:
       TZ: Europe/Madrid
     volumes:
