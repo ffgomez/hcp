@@ -23,3 +23,5 @@ services:
     ports:
       - "5672:5672"   # amqp
       - "15672:15672" # web ui
+      
+ # Funciona app portainer. La version normal de rabbit docker funciona en rpi
