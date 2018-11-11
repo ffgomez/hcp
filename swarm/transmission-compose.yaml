@@ -1,0 +1,1 @@
+docker run -d --restart=always --name transmission -v /media/almacen/torrent/temp:/to_download -v /media/almacen/torrent:/output -p 9091:9091 -p 51413:51413 -e USERNAME=pichonbot -e PASSWORD=amul0n jaymoulin/transmission
