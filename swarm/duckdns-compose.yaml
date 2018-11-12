@@ -1,0 +1,6 @@
+docker create \
+  --name=duckdns \
+  -e SUBDOMAINS=<subdomains> \
+  -e TOKEN=<token> \
+  -e TZ=Europe/Madrid \
+  lsioarmhf/duckdns
