@@ -1,2 +1,32 @@
+version: '3'
 
-docker run -p 53:53/tcp -p 53:53/udp --cap-add=NET_ADMIN --name dnsmasq jansepke/rpi-dnsmasq
+services:
+    dnsmasq:
+        restart: always
+        image: strm/dnsmasq
+        deploy:
+            replicas: 1        
+        configs:
+            - dnsmasq:/etc/dnsmasq.conf
+        ports:
+            - "53:53/udp"
+        cap_add:
+            - NET_ADMIN
+
+      
+configs:
+    dnsmasq:
+        file: ./dnsmasq.conf
+
+
+
+
+docker run \
+  -p 53:53/tcp \
+  -p 53:53/udp \
+  -p 67:67/udp \
+  -v dnsmasq.d:/etc/dnsmasq.d/ \
+  --config dnsmasq:/etc/dnsmasq.conf \
+  --cap-add=NET_ADMIN \
+  --name dnsmasq \
+  jansepke/rpi-dnsmasq
