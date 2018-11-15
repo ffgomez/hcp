@@ -26,7 +26,8 @@ docker run \
   -p 53:53/udp \
   -p 67:67/udp \
   -v dnsmasq.d:/etc/dnsmasq.d/ \
-  --config dnsmasq:/etc/dnsmasq.conf \
   --cap-add=NET_ADMIN \
   --name dnsmasq \
   jansepke/rpi-dnsmasq
+
+#  --config dnsmasq:/etc/dnsmasq.conf \
