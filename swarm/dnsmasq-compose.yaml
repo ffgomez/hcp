@@ -31,3 +31,11 @@ docker run \
   jansepke/rpi-dnsmasq
 
 #  --config dnsmasq:/etc/dnsmasq.conf \
+
+
+
+docker run \
+  --net=host \
+  -v dnsmasq.d:/etc/dnsmasq.d/ \
+  --name dnsmasq \
+  jansepke/rpi-dnsmasq
