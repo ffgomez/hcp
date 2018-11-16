@@ -37,5 +37,6 @@ docker run \
 docker run \
   --net=host \
   -v dnsmasq.d:/etc/dnsmasq.d/ \
+  --cap-add=NET_ADMIN \
   --name dnsmasq \
   jansepke/rpi-dnsmasq
