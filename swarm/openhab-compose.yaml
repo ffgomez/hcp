@@ -31,3 +31,9 @@ volumes:
         -e OPENHAB_HTTPS_PORT=8443 \
         --restart=always \
         openhab/openhab:2.3.0-armhf-alpine
+
+
+        --label traefik.backend=openhab \
+        --label traefik.port=8090 \
+        --label traefik.frontend.rule="Host:openhab.londres.casa" \
+        --label traefik.frontend.entryPoints=http \
