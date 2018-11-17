@@ -20,3 +20,10 @@ services:
 
 #volumes:
 #  haproxy_data:
+
+
+docker run -d 
+    -p 80:80 \
+    -v haproxy:/haproxy-override \
+    --name haproxy \
+    hypriot/rpi-haproxy
