@@ -5,6 +5,7 @@ docker run -d \
     -v /media/almacen/torrent:/output \
     -p 9091:9091 \
     -p 51413:51413 \
+    -p 51413:51413/udp \    
     -e USERNAME=pichonbot \
     -e PASSWORD=amul0n \
     --label traefik.backend=transmission \
