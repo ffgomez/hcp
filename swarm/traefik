@@ -1,0 +1,14 @@
+
+docker run \
+  -p 53:53/tcp \
+  -p 53:53/udp \
+  -p 67:67/udp \
+  -v dnsmasq.d:/etc/dnsmasq.d/ \
+  --cap-add=NET_ADMIN \
+  --name dnsmasq \
+  jansepke/rpi-dnsmasq
+  
+  
+   docker run --rm -p 80:80 -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock --network test traefik:1.5-alpine \
+         --api --loglevel=debug --entryPoints="Name:http Address::80" \
+         --docker --docker.endpoint="unix:///var/run/docker.sock"
