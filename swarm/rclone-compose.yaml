@@ -36,3 +36,16 @@ services:
 --syslog \
 --stats 1m \
 -v \
+
+
+docker run -d \
+    --name rclone-mount \
+    --restart=unless-stopped \
+    --cap-add SYS_ADMIN \
+    --device /dev/fuse \
+    --security-opt apparmor:unconfined \
+    -e RemotePath="alcazar:" \
+    -e MountCommands="--allow-other --allow-non-empty" \
+    -v rclone:/config \
+    -v alcazar:/mnt/alcazar:shared \
+    mumiehub/rclone-mount
