@@ -12,3 +12,14 @@ docker run \
    docker run --rm -p 80:80 -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock --network test traefik:1.5-alpine \
          --api --loglevel=debug --entryPoints="Name:http Address::80" \
          --docker --docker.endpoint="unix:///var/run/docker.sock"
+
+docker run --rm \
+   -p 80:80 \
+   -p 8080:8080 \
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   traefik \
+   --api --loglevel=debug --entryPoints="Name:http Address::80" --docker --docker.endpoint="unix:///var/run/docker.sock" 
+
+       
+       
+              --network test 1.5-alpine \
