@@ -27,4 +27,10 @@ services:
         restart: "unless-stopped"
 
 
-docker run -it -p 1880:1880 --name nodered elzekool/rpi-nodered
+docker run -it -p 1880:1880 \
+    --name nodered \
+    --label traefik.backend=nodered \
+    --label traefik.port=1880 \
+    --label traefik.frontend.rule="Host:nodered.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    elzekool/rpi-nodered
