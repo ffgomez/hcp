@@ -17,9 +17,15 @@ docker run \
    -p 80:80 \
    -p 8080:8080 \
    -v /var/run/docker.sock:/var/run/docker.sock \
+   -v traefik:/etc/traefik \
    --name traefik \
    traefik \
-   --api --loglevel=debug --entryPoints="Name:http Address::80" --docker --docker.endpoint="unix:///var/run/docker.sock" 
+   --api \
+   --loglevel=debug \
+   --entryPoints="Name:http Address::80" \
+   --docker --docker.endpoint="unix:///var/run/docker.sock" \
+   --file --file.directory="/etc/traefik/" --file.watch="true"
+   
 
        
        
