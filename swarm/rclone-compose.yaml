@@ -47,5 +47,5 @@ docker run -d \
     -e RemotePath="alcazar:" \
     -e MountCommands="--allow-other --allow-non-empty" \
     -v rclone:/config \
-    -v alcazar:/mnt/alcazar:shared \
+    -v alcazar:/mnt/alcazar \
     mumiehub/rclone-mount
