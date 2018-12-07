@@ -59,6 +59,6 @@ docker run -it --rm=true \
   --device /dev/fuse \
   --security-opt apparmor:unconfined \
   -v rclone:/home/pi/alcazar \
-  -v rclone.conf:/root/.rclone.conf \
+  -v /var/lib/docker/volumes/rclone.conf:/root/.rclone.conf \
   tloxipeuhca/rpi-rclone \
   rclone mount alcazar: /home/pi/alcazar --checkers 16 --dir-cache-time 30m -vv --allow-other --allow-non-empty --dir-cache-time 48h --poll-interval 5m --buffer-size 128M
