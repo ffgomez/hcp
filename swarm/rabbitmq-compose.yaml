@@ -25,3 +25,18 @@ services:
       - "15672:15672" # web ui
       
  # Funciona app portainer. La version normal de rabbit docker funciona en rpi
+ 
+ docker run -d \
+     --hostname mqtt.londres.casa \
+     --name rabbitmq \
+     -p 1883:1883 \
+     -p 9001:9001 \
+     --label traefik.backend=mqtt \
+     --label traefik.port=15672 \
+     --label traefik.frontend.rule="Host:mqtt.londres.casa" \
+     --label traefik.frontend.entryPoints=http \
+     rabbitmq:3-management
+     
+ 
+ 
+ docker run -ti --name mosquitto  -p 1883:1883 -p 9001:9001 pascaldevink/rpi-mosquitto 
