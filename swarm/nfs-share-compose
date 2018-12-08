@@ -1,0 +1,7 @@
+docker run -d \
+    --name nfs \
+    --privileged \
+    -p 2049:2049 \
+    -v /storage/alcazar/:/alcazar \
+    -e SHARED_DIRECTORY=/alcazar \
+    itsthenetwork/nfs-server-alpine:latest
