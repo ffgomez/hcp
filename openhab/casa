@@ -1,0 +1,24 @@
+Group     Home               "londres"                   <house>
+
+Group     GF                 "Planta Baja"               <groundfloor>   (Home)
+Group     FF                 "Primera Planta"            <firstfloor>    (Home)
+
+Group     GF_Cellar          "Bodega"                    <cellar>        (Home, GF)
+Group     FF_Bedroom         "Dormitorio"                <bedroom>       (Home, FF)
+Group     FF_Bathroom        "Baño"                      <bath>          (Home, FF)
+Group     FF_Balcony         "Terraza"                                   (Home, FF)
+Group     FF_Dining          "Comedor"                                   (Home, FF)
+Group     FF_GuestRoom       "Habitación de invitados"   <parents_4_3>   (Home, FF)
+Group     FF_KidsRoom        "Habitación de los niños"   <girl_3>        (Home, FF)
+Group     FF_LivingRoom      "Salón"                     <sofa>          (Home, FF)
+Group     FF_LivingDining    "Cocina americana"          <sofa>          (Home, FF)
+Group     FF_StorageRoom     "Despensa"                  <suitcase>      (Home, FF)
+Group     FF_Toilet          "Baño"                      <toilet>        (Home, FF)
+
+Switch    GF_Cellar_Light    "Luz"                       <light>         (GF_Cellar, gLight)       {channel=""}
+Contact   GF_Cellar_Door     "Puerta"                    <door>          (GF_Cellar, gDoor)        {channel=""}
+Switch    GF_Cellar_Motion   "Sensor de movimiento"      <motion>        (GF_Cellar, gMotion)      {channel=""}
+
+Group:Switch:OR(ON, OFF)         gLight    "Luz"                    <light>    (Home)
+Group:Contact:OR(OPEN, CLOSED)   gDoor     "Puerta"                 <door>     (Home)
+Group:Switch:OR(ON, OFF)         gMotion   "Sensor de movimiento"   <motion>   (Home)
