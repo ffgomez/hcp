@@ -3,8 +3,10 @@ docker run -d \
     -v home-assistant:/config \
     -v /etc/localtime:/etc/localtime:ro \
     --net=host \
+    homeassistant/raspberrypi3-homeassistant
+
+
     --label traefik.backend=homeassistant \
     --label traefik.port=8123 \
     --label traefik.frontend.rule="Host:homeassistant.londres.casa" \
     --label traefik.frontend.entryPoints=http \
-    homeassistant/raspberrypi3-homeassistant
