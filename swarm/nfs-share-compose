@@ -8,7 +8,4 @@ docker run -d \
     -e PERMITTED="*" \
     itsthenetwork/nfs-server-alpine:6-arm
 
-rpc (el host lo usa, claro)
-    -p 111:111 \
 
-        --net=host \
