@@ -80,3 +80,7 @@ docker run -it --rm=true \
   
   rclone mount alcazar: /home/pi/alcazar \
   --checkers 16 --dir-cache-time 30m -vv --allow-other --allow-non-empty --dir-cache-time 48h
+  
+  
+  -----no funciona nada de lo anterior-------
+nohup  rclone copy --fast-list -vvvv --size-only --transfers=2 --bwlimit=8M /media/almacen/torrent/ alcazar:/almacen/ &
