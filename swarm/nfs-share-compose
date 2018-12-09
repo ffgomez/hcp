@@ -3,8 +3,9 @@ docker run -d \
     --hostname nfs.londres.casa \
     --privileged \
     -p 2049:2049 \
-    -v /storage/alcazar/:/alcazar \
-    -e SHARED_DIRECTORY=/alcazar \
+    -v /storage/alcazar/:/nfs/alcazar \
+    -v /media/almacen/:/nfs/almacen \
+    -e SHARED_DIRECTORY=/nfs \
     -e PERMITTED="*" \
     itsthenetwork/nfs-server-alpine:6-arm
 
