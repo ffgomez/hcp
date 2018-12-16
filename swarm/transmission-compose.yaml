@@ -1,7 +1,19 @@
+FROM jaymoulin/transmission
+
+VOLUME /incomplete
+
+CMD transmission-daemon -c /to_download -w /output -f -t -a *.*.*.* -u "$USERNAME" -v "$PASSWORD" -p "$PORT" --incomplete-dir /incomplete
+
+
+docker build . -t transmission
+
+
+
 docker run -d \
     --restart=always \
     --name transmission \
-    -v /media/almacen/torrent:/output \
+    -v /media/almacen/torrent:/incomplete \
+    -v /storage/alcazar/torrent:/output \
     -p 9091:9091 \
     -p 51413:51413 \
     -p 51413:51413/udp \
@@ -11,7 +23,9 @@ docker run -d \
     --label traefik.port=9091 \
     --label traefik.frontend.rule="Host:transmission.londres.casa" \
     --label traefik.frontend.entryPoints=http \
-    jaymoulin/transmission
+    transmission
 
     -v /media/almacen/torrent/temp:/to_download \
-    -v /root/.config/transmission-daemon/torrents \
+
+
+
