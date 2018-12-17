@@ -23,4 +23,21 @@ volumes:
   jdownloader_config:
  
  
+ 
+ 
+ ####
+ docker volume create jdownloader
 
+docker run -d \
+    --restart=always \
+    -v /storage/alcazar/torrent:/root/Downloads \
+    -v jdownloader:/opt/JDownloader/cfg \
+    --name jdownloader \
+    -u $(id -u):$(id -g) \
+    jaymoulin/jdownloader
+    
+    
+        --label traefik.backend=transmission \
+    --label traefik.port=9091 \
+    --label traefik.frontend.rule="Host:transmission.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
