@@ -1,0 +1,11 @@
+
+
+docker run \
+    -v /dev/ttyUSB0:/dev/ttyUSB0 \
+    -p 1992:1992 \
+    --privileged \
+    --label traefik.backend=mongoose \
+    --label traefik.port=1992 \
+    --label traefik.frontend.rule="Host:mongoose.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    unixbigot/mos-armhf
