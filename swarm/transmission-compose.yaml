@@ -12,8 +12,7 @@ docker build . -t transmission
 docker run -d \
     --restart=always \
     --name transmission \
-    -v /media/almacen/torrent:/incomplete \
-    -v /storage/alcazar/torrent:/output \
+    -v /media/almacen/torrent:/output \
     -p 9091:9091 \
     -p 51413:51413 \
     -p 51413:51413/udp \
@@ -23,9 +22,13 @@ docker run -d \
     --label traefik.port=9091 \
     --label traefik.frontend.rule="Host:transmission.londres.casa" \
     --label traefik.frontend.entryPoints=http \
+    jaymoulin/transmission 
+    
+    
     transmission
 
     -v /media/almacen/torrent/temp:/to_download \
-
+    -v /media/almacen/torrent:/incomplete \
+    -v /storage/alcazar/torrent:/output \
 
 
