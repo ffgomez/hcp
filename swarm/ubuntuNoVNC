@@ -1,0 +1,11 @@
+docker run -d \
+    --name ubuntu \
+    --label traefik.backend=ubuntu \
+    --label traefik.port=6080 \
+    --label traefik.frontend.rule="Host:ubuntu.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    -p 6080:6080 \
+    colinhuang/ubuntu-novnc-armhf
+    
+    
+    no funciona overlay2
