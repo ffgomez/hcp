@@ -1,0 +1,15 @@
+docker run -d \
+    --name owncloud \
+    --hostname owncloud.londres.casa \
+    --user 0:0 \
+    --cap-add=NET_ADMIN \
+    -p 8088:80 \
+    -v owncloud:/var/www/html/ \
+    --label traefik.backend=owncloud \
+    --label traefik.port=8088 \
+    --label traefik.frontend.rule="Host:owncloud.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    owncloud
+    
+    
+    (no ve alcazar, mete permisos 33:tape)
