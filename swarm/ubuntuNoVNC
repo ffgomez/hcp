@@ -9,3 +9,24 @@ docker run -d \
     
     
     no funciona overlay2
+
+
+docker run -d -t \
+        --name desktop \
+        --label traefik.backend=dekstop \
+        --label traefik.port=6081 \
+        --label traefik.frontend.rule="Host:desktop.londres.casa" \
+        --label traefik.frontend.entryPoints=http \
+        -e VNC_PASSWD=passwd \
+        -v /storage/alcazar:/alcazar \
+        -p 6081:6080 \
+        forumi0721alpinearmhfbuild/alpine-armhf-desktop:latest
+        
+        
+        -e RUN_USER_NAME=<user_name> \
+        -e RUN_USER_UID=<user_uid> \
+        -e RUN_USER_GID=<user_gid> \
+        -e VNC_PASSWD=<vnc_passwd> \
+        -e VNC_DESKTOP_NAME=<vnc_desktop_name> \
+        -e VNC_DESKTOP_GEOMETRY=<vnc_desktop_geometry> \
+        -e VNC_DESKTOP_DEPTH=<vnc_desktop_depth> \
