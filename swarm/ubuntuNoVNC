@@ -17,13 +17,12 @@ docker run -d -t \
         --label traefik.port=6081 \
         --label traefik.frontend.rule="Host:desktop.londres.casa" \
         --label traefik.frontend.entryPoints=http \
-        -e RUN_USER_UID=0 \
         -e VNC_PASSWD=passwd \
         -v /storage/alcazar:/alcazar \
         -p 6081:6080 \
         forumi0721alpinearmhfbuild/alpine-armhf-desktop:latest
         
-        
+                -e RUN_USER_UID=0 \
         -e RUN_USER_NAME=<user_name> \
         -e RUN_USER_UID=<user_uid> \
         -e RUN_USER_GID=<user_gid> \
