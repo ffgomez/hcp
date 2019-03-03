@@ -30,3 +30,10 @@ docker run -d -t \
         -e VNC_DESKTOP_NAME=<vnc_desktop_name> \
         -e VNC_DESKTOP_GEOMETRY=<vnc_desktop_geometry> \
         -e VNC_DESKTOP_DEPTH=<vnc_desktop_depth> \
+
+docker run -d -p 6082:8080 -e X11PASSWD=password \
+        --label traefik.backend=raspian \
+        --label traefik.port=6082 \
+        --label traefik.frontend.rule="Host:raspian.londres.casa" \
+        --label traefik.frontend.entryPoints=http \
+razikus/docker-raspbian-novnc:xfce4
