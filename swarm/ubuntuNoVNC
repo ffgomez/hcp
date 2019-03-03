@@ -37,4 +37,6 @@ docker run -d -p 6080:8080 -e X11PASSWD=password \
         --label traefik.port=6080 \
         --label traefik.frontend.rule="Host:raspian.londres.casa" \
         --label traefik.frontend.entryPoints=http \
+        -v /storage/alcazar:/alcazar \
         razikus/docker-raspbian-novnc:xfce4
+
