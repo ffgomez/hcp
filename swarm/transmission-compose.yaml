@@ -17,7 +17,7 @@ docker run -d \
     -p 51413:51413 \
     -p 51413:51413/udp \
     -e USERNAME=pichonbot \
-    -e PASSWORD=amul0n \
+    -e PASSWORD= \
     --label traefik.backend=transmission \
     --label traefik.port=9091 \
     --label traefik.frontend.rule="Host:transmission.londres.casa" \
@@ -32,3 +32,23 @@ docker run -d \
     -v /storage/alcazar/torrent:/output \
 
 
+version: '3'
+
+services:
+  transmission:
+    image: jaymoulin/transmission
+    restart: always
+    ports:
+      - "9091:9091"
+      - "51413:51413"
+      - "51413:51413/udp"
+    volumes:
+      - /media/torrent:/output
+    environment:
+      USERNAME: "pichonbot"
+      PASSWORD: ""
+    labels:
+      traefik.backend: "transmission"
+      traefik.port: "9091"
+      traefik.frontend.rule: "Host:transmission.londres.casa"
+      traefik.frontend.entryPoints: "http"
