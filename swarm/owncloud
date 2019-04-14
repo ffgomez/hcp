@@ -5,6 +5,7 @@ docker run -d \
     -p 8088:80 \
     -v owncloud:/var/www/html/ \
     -v /storage/alcazar:/alcazar/ \
+    --user 0:33 \
     --label traefik.backend=owncloud \
     --label traefik.port=8088 \
     --label traefik.frontend.rule="Host:owncloud.londres.casa" \
