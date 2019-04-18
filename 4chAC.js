@@ -1,17 +1,22 @@
 // Ejemplos de topic
+// seguridad / estancia / tipo / objeto nombre
 // domo/dormitorio/luz/general
 // domo/pasillo/enchufe/baño
+
+// estado 
+// medir cada 100ms
+// actuar
 
 //invocacion en init.js
 
 let topic = domo
 
-let canalAC1 = $topic invitados/pantalla/mesa;
-let canalAC2 = $topic invitados/rpi/mesa;
-let canalAC3 = $topic invitados/luz/mesa;
-let canalAC4 = $topic invitados/regleta/mesa;
+let canalAC1 = invitados/pantalla/taller;
+let canalAC2 = invitados/rpi/taller;
+let canalAC3 = invitados/luz/taller;
+let canalAC4 = invitados/regleta/taller;
 
-let canalACs[] = [ canalAC1, canalAC2, canalAC3, canalAC4 ];
+let canalACs[] = [ topic canalAC1, canalAC2, canalAC3, canalAC4 ];
 4chAC(canalACs)
 
 
@@ -25,7 +30,7 @@ reles = [1 2 3 4]
 // main()
 configurarcanales()
 timer 100 chk-chg()
-timer 5000 pwr-pub()
+//timer 5000 pwr-pub()
 mqttACswitch()
 
 
@@ -45,19 +50,36 @@ for (i 4){
 for bobina bobinas
 if ADC.read(bobina) * estadizador (bobina) =! estado (bobina)
   MQTT.pub(topic(toma),estado(bobina)!
-  
-//pwr-pub()
-for bobina bobinas
-  MQTT.pub*topic(toma),powr
-  
+    
 // mqttACswitch
 for toma 
   MQTT.sub(){
   if swtich
-  GPIO.toggle(bobina
+  GPIO.toggle(bobina(i))
   }
+              
+GPIO.write(pin1, 1);
 
+// state y command
 
+if (x > y){
+  alert("Hello World");
+}
+
+text += cars[0] + "<br>";
+
+var carName1 = "Volvo XC60";
+
+var i = 2;
+var len = cars.length;
+var text = "";
+for (; i < len; i++) { 
+  text += cars[i] + "<br>";
+}
+
+//pwr-pub()
+for bobina bobinas
+  MQTT.pub*topic(toma),powr
 
 MQTT.sub('my/topic', function(conn, topic, msg) {
   print('Topic:', topic, 'message:', msg);
