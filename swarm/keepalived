@@ -1,0 +1,2 @@
+docker run -d -e KEEPALIVED_PRIORITY=$priority -e KEEPALIVED_VIRTUAL_IP=$VIP -e KEEPALIVED_PASSWORD=$password \
+--net=host --privileged=true angelnu/keepalived
