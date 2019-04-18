@@ -9,89 +9,88 @@
 // medir cada 100ms
 // actuar
 
-
-
-// Constantes para dispositivo (domo.conf ?)
-var topic = domo;
-
-var canalAC(0) = invitados/pantalla/taller;
-var canalAC(1) = invitados/rpi/taller;
-var canalAC(2) = invitados/luz/taller;
-var canalAC4 = invitados/regleta/taller;
-
 //invocacion en init.js
+4chAC() ;
 
-// añadir topic root
-let canalACs[] = [ topic canalAC1, canalAC2, canalAC3, canalAC4 ];
-4chAC(canalACs)
+// 4chAC.conf.js 
+
+// Topics
+var canalAC[0] = domo/invitados/pantalla/taller;
+var canalAC[1] = domo/invitados/rpi/taller;
+var canalAC[2] = domo/invitados/luz/taller;
+var canalAC[3] = domo/invitados/regleta/taller;
+// Pin bobina
+var bobina[0] = ;
+var bobina[1] = ;
+var bobina[2] = ;
+var bobina[3] = ;
+// Pin rele
+var rele[0] = ;
+var rele[1] = ;
+var rele[2] = ;
+var rele[3] = ;
+// Corriente MAX
+var corrienteMax[0] = ;
+var corrienteMax[1] = ;
+var corrienteMax[2] = ;
+var corrienteMax[3] = ;
+
 
 
 // 4chAC.js
 
-// Configuracion
-corrientes = [ 5, 20,0,0]
-bobinas = [12,30,] 
-reles = [1 2 3 4]
 
 // main()
 configurarcanales()
-timer 100 chk-chg()
-//timer 5000 pwr-pub()
+Timer.set(100, true, chk-chg(), null);
 mqttACswitch()
 
 
 //configurarcanales()
-for (i 4){
-  if bobinas(i) != 0 {
-    ADC.enable(bobinas(i));
-  }
-  if reles(i) !=0 {
-    GPIO.set_mode(reles(i), GPIO.MODE_OUTPUT);
-  }
-  estados(i) = 0
+var len = bobina.length;
+for (i = 0; i < len; i++) { 
+  ADC.enable(bobina[i]);
+}
+var len = rele.length;
+for (i = 0; i < len; i++) { 
+  GPIO.set_mode(rele[i], GPIO.MODE_OUTPUT);
 }
 
 
 //chk-chg()
-for bobina bobinas
-if ADC.read(bobina) * estadizador (bobina) =! estado (bobina)
-  MQTT.pub(topic(toma),estado(bobina)!
-    
-// mqttACswitch
-for toma 
-  MQTT.sub(){
-  if swtich
-  GPIO.toggle(bobina(i))
+var len = bobina.length;
+for (i = 0; i < len; i++) { 
+  let corriente = (ADC.read(bobina[i])*corrienteMax[0])/4095);
+  if (corriente > 0.01){
+    let estadoactual = OFF;
   }
+  else {
+    let estadoactual = ON;
+  }
+  if (estadoactual != estado[i] ){
+    let estado[i] = estadoactual;
+    let ok = MQTT.pub(canalAC[i], estado[i], 1);
+  }
+}
+
+// mqttACswitch
+var len = rele.length;
+for (i = 0; i < len; i++) { 
+  MQTT.sub(canalAC[i], function(conn, topic, msg) {
+    print('Topic:', topic, 'message:', msg);
+    let value = GPIO.toggle(rele[i]);
+    print(value ? 'Tick' : 'Tock', 'uptime:', Sys.uptime(), getInfo());
+}, null);
+
+
+
+
+
               
 GPIO.write(pin1, 1);
 
 // state y command
 
-if (x > y){
-  alert("Hello World");
-}
-
-text += cars[0] + "<br>";
-
-var carName1 = "Volvo XC60";
-
-var i = 2;
-var len = cars.length;
-var text = "";
-for (; i < len; i++) { 
-  text += cars[i] + "<br>";
-}
-
-//pwr-pub()
-for bobina bobinas
-  MQTT.pub*topic(toma),powr
-
-MQTT.sub('my/topic', function(conn, topic, msg) {
-  print('Topic:', topic, 'message:', msg);
-  let value = GPIO.toggle(led);
-  print(value ? 'Tick' : 'Tock', 'uptime:', Sys.uptime(), getInfo());
-}, null);
 
 
 //  1 second
@@ -101,8 +100,4 @@ Timer.set(1000, true, function() {
     print("DEBUG: Battery Voltage is", battery_voltage, "V");
 }, null);
 
-//for (let i =o; i<=5; i++) { 
-//  let sensor = sensores(i);
-//  ADC.enable(sensor);
-//}
-//  print('aa.' + JSON.stringify(i) + '.bb');
+
