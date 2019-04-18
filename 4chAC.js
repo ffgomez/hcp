@@ -2,33 +2,44 @@
 // domo/dormitorio/luz/general
 // domo/pasillo/enchufe/baño
 
+//invocacion en init.js
+
 let topic = domo
 
-//invocacion
+let canalAC1 = $topic invitados/pantalla/mesa;
+let canalAC2 = $topic invitados/rpi/mesa;
+let canalAC3 = $topic invitados/luz/mesa;
+let canalAC4 = $topic invitados/regleta/mesa;
+
+let canalACs[] = [ canalAC1, canalAC2, canalAC3, canalAC4 ];
+4chAC(canalACs)
 
 
-4chAC(invitados/pantalla/mesa, invitados/rpi/mesa, invitados/luz/mesa, invitados/regleta/mesa)
-
-
-// 4chAC
+// 4chAC.js
 
 // Configuracion
 corrientes = [ 5, 20,0,0]
 bobinas = [12,30,] 
-reles = []
+reles = [1 2 3 4]
 
 // main()
-configurar()
+configurarcanales()
 timer 100 chk-chg()
 timer 5000 pwr-pub()
 mqttACswitch()
 
 
-//configurar()
-for (pin pines){
-ADC.enable(pin);
+//configurarcanales()
+for (i 4){
+  if bobinas(i) != 0 {
+    ADC.enable(bobinas(i));
+  }
+  if reles(i) !=0 {
+    GPIO.set_mode(reles(i), GPIO.MODE_OUTPUT);
+  }
+  estados(i) = 0
 }
-estados =0 0 0 0
+
 
 //chk-chg()
 for bobina bobinas
