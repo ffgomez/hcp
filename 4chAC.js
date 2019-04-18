@@ -3,21 +3,25 @@
 // domo/dormitorio/luz/general
 // domo/pasillo/enchufe/baño
 
+
+
 // estado 
 // medir cada 100ms
 // actuar
 
+
+
+// Constantes para dispositivo (domo.conf ?)
+var topic = domo;
+
+var canalAC(0) = invitados/pantalla/taller;
+var canalAC(1) = invitados/rpi/taller;
+var canalAC(2) = invitados/luz/taller;
+var canalAC4 = invitados/regleta/taller;
+
 //invocacion en init.js
 
-var topic =
-
-let topic = domo
-
-let canalAC1 = invitados/pantalla/taller;
-let canalAC2 = invitados/rpi/taller;
-let canalAC3 = invitados/luz/taller;
-let canalAC4 = invitados/regleta/taller;
-
+// añadir topic root
 let canalACs[] = [ topic canalAC1, canalAC2, canalAC3, canalAC4 ];
 4chAC(canalACs)
 
