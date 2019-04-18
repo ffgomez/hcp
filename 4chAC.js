@@ -9,6 +9,8 @@
 
 //invocacion en init.js
 
+var topic =
+
 let topic = domo
 
 let canalAC1 = invitados/pantalla/taller;
