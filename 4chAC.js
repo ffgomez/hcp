@@ -22,7 +22,7 @@ emparedado()
 // Comprobar que no ha variado desde la ultima vez que se midio
 function comprobar_conmutacion(var corriente,var umbral,let bool estado){
   var actual = false;
-  if ((corriente - umbral) > 0){
+  if ((corriente > umbral){
     actual = true;
   }
   if (estado != actual){
