@@ -11,7 +11,7 @@
 load ('emparedado.js');
 
 // ejecucion
-emparedado( canal1:domo/invitados/pantalla/taller, canal3:domo/invitados/luz/taller )
+emparedado()
 //--------------------------------------
 
 
