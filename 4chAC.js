@@ -17,10 +17,6 @@ emparedado( canal1:domo/invitados/pantalla/taller, canal3:domo/invitados/luz/tal
 
 // emparedado.js
 
-// funciones---
-// publicar estado 
-// medir cada 100ms
-// actuar
   
 // El ADC de mongoose-os no tiene interrupción por ADC
 // Comprobar que no ha variado desde la ultima vez que se midio
@@ -68,31 +64,27 @@ class Canal{
 function emparedado( topic[0]:, topic[1], topic[2], topic[3] ){ //????????
   // inicializa los 4 objetos canales
   Canal canalAC[4]; //????????
-  
-	load ( canalAC[]='emparedado-config.json' );  //????????
-	// la condicion para usar un canal es que tenga topic
-	for 
-	canalAC[0].topic = topic1;
-	canalAC[1].topic = topic2;
-  	canalAC[2].topic = topic3;
-  	canalAC[3].topic = topic4;
+ 	load ( canalAC[]='emparedado-config.json' );  //????????
+  let canalAC = JSON.parse(File.read('emparedado-settings.json')); 
 
   // Configura los canales activos = con topic
   for (canal = 0; canal < 4; canal++) { 
+    canalAC[canal].topic = topic[canal];
     if (canalAC[canal].topic != null) {
+	    canalAC[canal].habilitado = true
       canalAC[canal].bobina.inicializar();
       canalAC[canal].rele.inicializar();
-      MQTT.sub(canalAC[canal].topic,canalAC[canal].rele.alternar,null);
+      MQTT.sub(canalAC[canal].topic,canalAC[canal].rele.alternar(),null);
     };
   };
 
-
   Timer.set(1000, true, function() {
+    
     let battery_voltage = (ADC.read(battery)/4095)*bobina[i];
     let ok = MQTT.pub(topic, message, 1);
     print("DEBUG: Battery Voltage is", battery_voltage, "V");
   }, null);
-
+};
 
 
 
@@ -192,4 +184,18 @@ Timer.set(1000, true, function() {
     print("DEBUG: Battery Voltage is", battery_voltage, "V");
 }, null);
 
+	items  
+Switch mqttsw1 "Switch 1" (all) {mqtt=">[mysensor:/testsw/1:command:on:default],>[mysensor:/testsw/1:command:off:default]"}
+Switch mqttsw2 "Switch 2" (all) {mqtt=">[mysensor:/testsw/2:command:off:default],>[mysensor:/testsw/2:command:on:default]"}
+
+Item itemName { mqtt="<direction>[<broker>:<topic>:<type>:<trigger>:<transformation>]" }
+	  
+Switch mySwitch {mqtt=">[mybroker:myhouse/office/light:command:ON:1],>[mybroker:myhouse/office/light:command:OFF:0]"}
+Switch mySwitch {mqtt=">[mybroker:myhouse/office/light:command:ON:1],>[mybroker:myhouse/office/light:command:*:Switch ${itemName} was turned ${command}]"}
+	  
+	  sitemap
+Frame label="MQTT" {
+	Switch item=mqttsw1 label="MQTT Switch 1"	
+	Switch item=mqttsw2 label="MQTT Switch 2"
+}
 
