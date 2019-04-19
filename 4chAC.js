@@ -4,23 +4,42 @@
 // domo/pasillo/enchufe/baño
 
 
+//----------------------------------
+//invocacion en init.js
 
-invocacion en init.js
-
+// carga
 load ('emparedado.js');
 
-emparedado( domo/invitados/pantalla/taller, , domo/invitados/luz/taller, )
+// ejecucion
+emparedado( canal1:domo/invitados/pantalla/taller, canal3:domo/invitados/luz/taller )
+//--------------------------------------
 
 
+// emparedado.js
 
-// estado 
+// funciones---
+// publicar estado 
 // medir cada 100ms
 // actuar
-
+  
+// El ADC de mongoose-os no tiene interrupción por ADC
+// Comprobar que no ha variado desde la ultima vez que se midio
+function comprobar_conmutacion(var corriente,var umbral,let bool estado){
+  var actual = false;
+  if ((corriente - umbral) > 0){
+    actual = true;
+  }
+  if (estado != actual){
+    estado = actual;      //debe salir de la función y actualizar estado del objeto
+    return true;
+  };
+  else {
+		return false;
+	};
+};
 
 // Resolucion del ADC
 const ADC_RES = 4095;
-  
 
 class Bobina{
   var pin;
@@ -28,37 +47,60 @@ class Bobina{
   var umbral;
   let inicializar = ADC.enable(this.pin);
   let corriente = ADC.read(this.pin)*this.max/ADC_RES;
-  let alternado = comprobar_conmutacion(this.pin,this.umbral,this.estado); //(bool) estado entra y sale
-  var estado;  //bool
+  bool alternado = comprobar_conmutacion(this.corriente,this.umbral,this.estado); // .estado entra y sale estado
+  bool estado = 0;
 };
   
 class Rele{
   var pin;
   let inicializar = GPIO.set_mode(this.pin, GPIO.MODE_OUTPUT);
-  function alternar(this.pin);
-  function apagar(this.pin);
+  bool alternar = GPIO.toggle(this.pin);
+  bool apagar = GPIO.write(this.pin,0);
 };
 
 class Canal{
-	var topic;
-	var bobina;
-	var rele;
-  var habilitado;
+  let topic;
+  let Bobina bobina; 
+  let Rele rele;
+  let habilitado;
 };
 
+function emparedado( topic[0]:, topic[1], topic[2], topic[3] ){ //????????
+  // inicializa los 4 objetos canales
+  Canal canalAC[4]; //????????
   
+	load ( canalAC[]='emparedado-config.json' );  //????????
+	// la condicion para usar un canal es que tenga topic
+	for 
+	canalAC[0].topic = topic1;
+	canalAC[1].topic = topic2;
+  	canalAC[2].topic = topic3;
+  	canalAC[3].topic = topic4;
 
-// Activo
-canalAC[0].habilitado = HABILITADO1;
-canalAC[1].habilitado = HABILITADO2;
-canalAC[2].habilitado = HABILITADO3;
-canalAC[3].habilitado = HABILITADO4;
+  // Configura los canales activos = con topic
+  for (canal = 0; canal < 4; canal++) { 
+    if (canalAC[canal].topic != null) {
+      canalAC[canal].bobina.inicializar();
+      canalAC[canal].rele.inicializar();
+      MQTT.sub(canalAC[canal].topic,canalAC[canal].rele.alternar,null);
+    };
+  };
+
+
+  Timer.set(1000, true, function() {
+    let battery_voltage = (ADC.read(battery)/4095)*bobina[i];
+    let ok = MQTT.pub(topic, message, 1);
+    print("DEBUG: Battery Voltage is", battery_voltage, "V");
+  }, null);
+
+
+
 
 // Topics
-canalAC[0].topic = domo/invitados/pantalla/taller;
-canalAC[1].topic = domo/invitados/rpi/taller;
-canalAC[2].topic = domo/invitados/luz/taller;
-canalAC[3].topic = domo/invitados/regleta/taller;
+canalAC[0].topic = topic1;
+canalAC[1].topic = topic2;
+canalAC[2].topic = topic3;
+canalAC[3].topic = topic4;
 
 // Pin bobina
 canalAC[0].bobina.pin = 21;
@@ -92,14 +134,12 @@ canalAC[3].bobina.umbral = 20;
 
 
 
-// Configura los canales activos 
-for (canal = 0; canal < 4; canal++) { 
-  if (canalAC[canal].habilitado) {
-    canalAC[canal].bobina.inicializar();
-    canalAC[canal].rele.inicializar();
 
 
 
+
+
+// descartado
 // Configura los canales activos 
 for (canal = 0; canal < 4; canal++) { 
   if (canalAC[canal].habilitado) {
@@ -136,10 +176,6 @@ Timer.set(100, true, function() {
     }
   }
 }, null);
-
-
-
-
 
 
               
