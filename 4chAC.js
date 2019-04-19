@@ -5,82 +5,138 @@
 
 
 
+invocacion en init.js
+
+load ('emparedado.js');
+
+emparedado( domo/invitados/pantalla/taller, , domo/invitados/luz/taller, )
+
+
+
 // estado 
 // medir cada 100ms
 // actuar
 
-//invocacion en init.js
-4chAC() ;
 
-// 4chAC.conf.js 
+// Resolucion del ADC
+const ADC_RES = 4095;
+  
+
+class Bobina{
+  var pin;
+  var max;
+  var umbral;
+  let inicializar = ADC.enable(this.pin);
+  let corriente = ADC.read(this.pin)*this.max/ADC_RES;
+  let alternado = comprobar_conmutacion(this.pin,this.umbral,this.estado); //(bool) estado entra y sale
+  var estado;  //bool
+};
+  
+class Rele{
+  var pin;
+  let inicializar = GPIO.set_mode(this.pin, GPIO.MODE_OUTPUT);
+  function alternar(this.pin);
+  function apagar(this.pin);
+};
+
+class Canal{
+	var topic;
+	var bobina;
+	var rele;
+  var habilitado;
+};
+
+  
+
+// Activo
+canalAC[0].habilitado = HABILITADO1;
+canalAC[1].habilitado = HABILITADO2;
+canalAC[2].habilitado = HABILITADO3;
+canalAC[3].habilitado = HABILITADO4;
 
 // Topics
-var canalAC[0] = domo/invitados/pantalla/taller;
-var canalAC[1] = domo/invitados/rpi/taller;
-var canalAC[2] = domo/invitados/luz/taller;
-var canalAC[3] = domo/invitados/regleta/taller;
+canalAC[0].topic = domo/invitados/pantalla/taller;
+canalAC[1].topic = domo/invitados/rpi/taller;
+canalAC[2].topic = domo/invitados/luz/taller;
+canalAC[3].topic = domo/invitados/regleta/taller;
+
 // Pin bobina
-var bobina[0] = ;
-var bobina[1] = ;
-var bobina[2] = ;
-var bobina[3] = ;
+canalAC[0].bobina.pin = 21;
+canalAC[1].bobina.pin = 22;
+canalAC[2].bobina.pin = 23;
+canalAC[3].bobina.pin = 24;
+
 // Pin rele
-var rele[0] = ;
-var rele[1] = ;
-var rele[2] = ;
-var rele[3] = ;
-// Corriente MAX
-var corrienteMax[0] = ;
-var corrienteMax[1] = ;
-var corrienteMax[2] = ;
-var corrienteMax[3] = ;
+canalAC[0].rele.pin = 31;
+canalAC[1].rele.pin = 32;
+canalAC[2].rele.pin = 33;
+canalAC[3].rele.pin = 34;
+
+// Corriente MAX en miliamperios
+canalAC[0].bobina.max = 20000;
+canalAC[1].bobina.max = 20000;
+canalAC[2].bobina.max = 20000;
+canalAC[3].bobina.max = 20000;
+
+// Corriente umbral de deteccion
+canalAC[0].bobina.umbral = 20;
+canalAC[1].bobina.umbral = 20;
+canalAC[2].bobina.umbral = 20;
+canalAC[3].bobina.umbral = 20;
+
+// Corriente umbral de deteccion
+canalAC[0].bobina.umbral = 20;
+canalAC[1].bobina.umbral = 20;
+canalAC[2].bobina.umbral = 20;
+canalAC[3].bobina.umbral = 20;
 
 
 
-// 4chAC.js
+// Configura los canales activos 
+for (canal = 0; canal < 4; canal++) { 
+  if (canalAC[canal].habilitado) {
+    canalAC[canal].bobina.inicializar();
+    canalAC[canal].rele.inicializar();
 
 
-// main()
-configurarcanales()
-Timer.set(100, true, chk-chg(), null);
-mqttACswitch()
 
+// Configura los canales activos 
+for (canal = 0; canal < 4; canal++) { 
+  if (canalAC[canal].habilitado) {
+    // Activar el ADC en los pines de las bobina
+    ADC.enable(canalAC[canal].bobina.pin);
+    // Configurar el pin del rele como salida
+    GPIO.set_mode(canalAC[canal].rele.pin, GPIO.MODE_OUTPUT);
+    // Suscribe al topic mqtt
+    // MQTT.sub(canalAC[canal].topic, GPIO.toggle(canalAC[canal].rele.pin))
+    MQTT.sub(canalAC[canal].topic, function(conn, topic, msg) {
+      // Si hay actividad en el topic alterna el estado del rele
+      GPIO.toggle(canalAC[canal].rele.pin);
+    }, null);
+  };
+};
 
-//configurarcanales()
-var len = bobina.length;
-for (i = 0; i < len; i++) { 
-  ADC.enable(bobina[i]);
-}
-var len = rele.length;
-for (i = 0; i < len; i++) { 
-  GPIO.set_mode(rele[i], GPIO.MODE_OUTPUT);
-}
-
-
-//chk-chg()
-var len = bobina.length;
-for (i = 0; i < len; i++) { 
-  let corriente = (ADC.read(bobina[i])*corrienteMax[0])/4095);
-  if (corriente > 0.01){
-    let estadoactual = OFF;
+// Cada 100ms
+Timer.set(100, true, function() {
+  // Recorre los canales
+  for (canal = 0; canal < 4; canal++) { 
+    if (canalAC[canal].habilitado) {
+    
+  for (canal = 0; canal < canales; canal++) { 
+    let corriente = (ADC.read(bobina[canal])*corrienteMax[canal])/4095);
+    if (corriente > 0.01){
+      let estadoactual = OFF;
+    }
+    else {
+      let estadoactual = ON;
+    }
+    if (estadoactual != estado[i] ){
+      let estado[i] = estadoactual;
+      let ok = MQTT.pub(canalAC[canal].topic, canalAC[canal].estado, 1);
+    }
   }
-  else {
-    let estadoactual = ON;
-  }
-  if (estadoactual != estado[i] ){
-    let estado[i] = estadoactual;
-    let ok = MQTT.pub(canalAC[i], estado[i], 1);
-  }
-}
-
-// mqttACswitch
-var len = rele.length;
-for (i = 0; i < len; i++) { 
-  MQTT.sub(canalAC[i], function(conn, topic, msg) {
-    print('Topic:', topic, 'message:', msg);
-    let value = GPIO.toggle(rele[i]);
-    print(value ? 'Tick' : 'Tock', 'uptime:', Sys.uptime(), getInfo());
 }, null);
+
 
 
 
