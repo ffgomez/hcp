@@ -48,12 +48,17 @@ class Canal{
   let Rele rele;
 };
 
+
+// FUNCION PRINCIPAL
+
 function emparedado(){ 
   // inicializa los canales
   let Canal canal[];
+  
 	// carga los canales configurados
   canal = JSON.parse(File.read('emparedado-settings.json'));
-  // Configura los canales
+  
+	// Configura los canales
   let ok[];			
   for (var i = 0; i < canal.length; i++) { 
     if (canal[i].topic != null) {
@@ -63,7 +68,8 @@ function emparedado(){
       MQTT.sub(canal[i].topic, canal[i].rele.alternar(), null);
     };
   };
-  // Comprobar cada 100ms
+  
+	// Comprobar cada 100ms
   Timer.set(100, true, function() {
     // todos los canales configurados
     for (var i = 0; i < ok.length; i++) {
@@ -71,7 +77,9 @@ function emparedado(){
       if(canal[ok[i]].bobina.alternado()){
         // y publica el estado
         MQTT.pub(canal[ok[i]].topic, canal[ok[i]].bobina.estado)
-  }, null);
+			}
+		}
+	}, null);
 };
 
 
