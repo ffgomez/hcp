@@ -28,12 +28,8 @@ class Bobina{
   bool function inicializar (){ ADC.enable(this.pin)};
   bool function corriente() = { ADC.read(this.pin) * this.max / ADC_RES }; 
   bool function alternado() {
-    var actual = false;
-    if ((this.corriente() > umbral)){
-      actual = true
-    };
-    if (estado != actual){
-      estado = actual;     
+    if ((this.corriente() > this.umbral) != this.estado)
+      this.estado = !this.estado;     
       return true
     }
     return false
