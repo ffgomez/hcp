@@ -1,6 +1,6 @@
 
 
-docker run \
+docker run -d \
     --name moongose-os \
     -v /dev/ttyUSB0:/dev/ttyUSB0 \
     -p 1992:1992 \
