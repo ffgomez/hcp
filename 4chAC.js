@@ -50,15 +50,14 @@ class Canal{
 
 
 // FUNCION PRINCIPAL
-
 function emparedado(){ 
   // inicializa los canales
   let Canal canal[];
   
-	// carga los canales configurados
+  // carga los canales configurados
   canal = JSON.parse(File.read('emparedado-settings.json'));
   
-	// Configura los canales
+  // Configura los canales
   let ok[];			
   for (var i = 0; i < canal.length; i++) { 
     if (canal[i].topic != null) {
@@ -69,7 +68,7 @@ function emparedado(){
     };
   };
   
-	// Comprobar cada 100ms
+  // Comprobar cada 100ms
   Timer.set(100, true, function() {
     // todos los canales configurados
     for (var i = 0; i < ok.length; i++) {
@@ -77,30 +76,30 @@ function emparedado(){
       if(canal[ok[i]].bobina.alternado()){
         // y publica el estado
         MQTT.pub(canal[ok[i]].topic, canal[ok[i]].bobina.estado)
-			}
-		}
-	}, null);
+	}
+    }
+  }, null);
 };
 
 
 /* JSON
 [{
-	"topic":"domo/invitados/monitor/taller",
+  "topic":"domo/invitados/monitor/taller",
   "bobina": { “pin”:36, “max”:20000, “umbral”:20 },
   “rele”: { "pin":6 }
 },
 {
-	"topic":"domo/invitados/regleta/taller",
+  "topic":"domo/invitados/regleta/taller",
   "bobina": { “pin”:25, “max”:5000, “umbral”:20 },
   “rele”: { "pin":7 }
 },
 {
-	"topic":"domo/invitados/rpi/taller",
+  "topic":"domo/invitados/rpi/taller",
   "bobina": { “pin”:31, “max”:2000, “umbral”:20 },
   “rele”: { "pin":8 }
 },
 {
-	"topic":"domo/invitados/luz/taller",
+  "topic":"domo/invitados/luz/taller",
   "bobina": { “pin”:31, “max”:2000, “umbral”:20 },
   “rele”: { "pin":15 }
 }]
