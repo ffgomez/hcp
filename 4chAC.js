@@ -85,24 +85,24 @@ function emparedado(){
 
 /* JSON
 [{
-	"topic":"topic/canal1",
-  "bobina": { “pin”:31, “max”:2000, “umbral”:20 },
-  “rele”: { "pin":21 }
+	"topic":"domo/invitados/monitor/taller",
+  "bobina": { “pin”:36, “max”:20000, “umbral”:20 },
+  “rele”: { "pin":6 }
 },
 {
-	"topic":"topic/canal1",
-  "bobina": { “pin”:32, “max”:2000, “umbral”:20 },
-  “rele”: { "pin":22 }
+	"topic":"domo/invitados/regleta/taller",
+  "bobina": { “pin”:25, “max”:5000, “umbral”:20 },
+  “rele”: { "pin":7 }
 },
 {
-	"topic":"topic/canal1",
+	"topic":"domo/invitados/rpi/taller",
   "bobina": { “pin”:31, “max”:2000, “umbral”:20 },
-  “rele”: { "pin":21 }
+  “rele”: { "pin":8 }
 },
 {
-	"topic":"topic/canal1",
+	"topic":"domo/invitados/luz/taller",
   "bobina": { “pin”:31, “max”:2000, “umbral”:20 },
-  “rele”: { "pin":21 }
+  “rele”: { "pin":15 }
 }]
 */
 
