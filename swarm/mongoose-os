@@ -18,7 +18,7 @@ docker run -d \
 FROM golang
 RUN apt update && \
     apt install -y apt-utils 
-RUN apt install -y python3
+RUN apt install -y python3 libusb-1.0
 RUN apt install -y libftdi-dev python-git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN go get -v github.com/kardianos/govendor
