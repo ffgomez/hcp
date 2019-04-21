@@ -44,5 +44,31 @@ CMD ["/go/bin/mos"]
     --label traefik.frontend.entryPoints=http \
     mos
     
+    
+FROM golang
+RUN apt update && \
+    apt install -y apt-utils
+RUN apt install -y python3 libusb-1.0
+RUN apt install -y libftdi-dev python-git && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN go get -v github.com/kardianos/govendor
+RUN git clone https://github.com/cesanta/mos-tool /go/src/cesanta.com
+WORKDIR /go/src/cesanta.com/
+RUN govendor sync -v
+RUN make -C mos install
+EXPOSE 1992
+CMD ["/go/bin/mos"]
+    
+    docker run -d \
+    --name mos \
+    -v /dev/ttyUSB0:/dev/ttyUSB0 \
+    --net=host \
+    --label traefik.backend=mongoose \
+    --label traefik.port=1992 \
+    --label traefik.frontend.rule="Host:mongoose.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    mos
+    
+    
     cruftlab/mongoose-os
     init
