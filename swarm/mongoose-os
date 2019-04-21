@@ -69,6 +69,7 @@ CMD ["/go/bin/mos"]
     --label traefik.frontend.entryPoints=http \
     mos
     
+    hay que hacerle tunel al host para por navegador hacer localhost:1992 (no se porqué el mos esta bindeado a 127001)
     
     cruftlab/mongoose-os
     init
