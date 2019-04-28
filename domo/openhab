@@ -1,0 +1,19 @@
+	items  
+Switch mqttsw1 "Switch 1" (all) {mqtt=">[mysensor:/testsw/1:command:on:default],>[mysensor:/testsw/1:command:off:default]"}
+Switch mqttsw2 "Switch 2" (all) {mqtt=">[mysensor:/testsw/2:command:off:default],>[mysensor:/testsw/2:command:on:default]"}
+Item itemName { mqtt="<direction>[<broker>:<topic>:<type>:<trigger>:<transformation>]" }
+	  
+Switch mySwitch {mqtt=">[mybroker:myhouse/office/light:command:ON:1],>[mybroker:myhouse/office/light:command:OFF:0]"}
+Switch mySwitch {mqtt=">[mybroker:myhouse/office/light:command:ON:1],>[mybroker:myhouse/office/light:command:*:Switch ${itemName} was turned ${command}]"}
+	  
+	  sitemap
+Frame label="MQTT" {
+	Switch item=mqttsw1 label="MQTT Switch 1"	
+	Switch item=mqttsw2 label="MQTT Switch 2"
+}
+
+
+// Conmutar
+Switch mqttsw1 "Switch 1" (all) {mqtt=">[mqtt:domo/invitados/luz/principal:command:SWITCH:default],<[mqtt:domo/invitados/luz/principal:state:default]"}
+// Estado
+Switch 
