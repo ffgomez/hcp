@@ -1,0 +1,15 @@
+https://hub.docker.com/r/netzfisch/rpi-vpn-server/
+
+docker volume create vpn
+
+docker run --name vpnserver \
+             --env HOSTNAME=your.domain.com \
+             --env VPN_USER=name \
+             --env VPN_PASSWORD=secret \
+             --cap-add NET_ADMIN \
+             --publish 500:500/udp \
+             --publish 4500:4500/udp \
+             --volume vpn:/vpn-secrets \
+             --restart unless-stopped \
+             --detach \
+             netzfisch/rpi-vpn-server
