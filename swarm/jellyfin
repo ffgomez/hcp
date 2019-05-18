@@ -1,0 +1,18 @@
+
+
+docker run -d \
+    --name jellyfin \
+    --volume /storage/alcazar/peliculas:/mnt/peliculas \
+    --volume /storage/alcazar/series:/mnt/series \
+    --volume /storage/alcazar/torrent:/mnt/torrent \
+    --volume jellyfin_config:/config \
+    --volume jellyfin_cache:/cache \
+    --publish 8096:8096 \
+    --publish 8920:8920 \
+    --label traefik.backend=emby \
+    --label traefik.port=8096 \
+    --label traefik.frontend.rule="Host:jellyfin.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    jellyfin/jellyfin
+    
+   
