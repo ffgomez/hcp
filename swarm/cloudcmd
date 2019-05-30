@@ -1,6 +1,23 @@
 Dockerfile 
 
 FROM arm32v7/node
+RUN apt-get update
+RUN apt-get install -y wget libpopt0 python-crypto samba samba-common
+RUN mkdir /rclone && mkdir /mount/
+RUN wget https://downloads.rclone.org/rclone-current-linux-arm.deb
+RUN dpkg -i rclone-current-linux-arm.deb
+CMD rclone mount -vv alcazar: /alcazar \
+        --config /rclone/rclone.conf \
+        --allow-other --uid 33 --gid 33 --allow-non-empty \
+        --checkers 3 \
+        --dir-cache-time 48h \
+        --vfs-cache-max-age 48h \
+        --vfs-read-chunk-size 10M \
+        --vfs-read-chunk-size-limit 512M \
+        --buffer-size 512M \
+        --tpslimit 3 \
+        --transfers 3 \
+        --drive-chunk-size 32M 
 RUN npm i cloudcmd -g
 EXPOSE 8000
 ENTRYPOINT ["/usr/local/lib/node_modules/cloudcmd/bin/cloudcmd.js"]
@@ -8,11 +25,20 @@ ENTRYPOINT ["/usr/local/lib/node_modules/cloudcmd/bin/cloudcmd.js"]
 
 docker run  -it -d \
     --name cloudcmd \
+    --privileged 
+    -p 139:139 -p 445:445 \
+    -p 2049:2049 \
     -p 8000:8000 \
-    -v /storage/alcazar:/alcazar/ \
+    -v rclone.conf:/rclone/rclone.conf \
+    -v smb.conf:/etc/smb/smb.conf
+    -v hosts:/etc/
+    -v 
+
     -v /media/almacen/torrent:/torrent/ \
     --label traefik.backend=cloudcmd \
     --label traefik.port=8000 \
-    --label traefik.frontend.rule="Host:cloudcmd.londres.casa" \
+    --label traefik.frontend.rule="Host:alcazar.londres.casa" \
     --label traefik.frontend.entryPoints=http \
     cloudcmd
+
+Alcazar
