@@ -1,12 +1,19 @@
 Dockerfile 
 
 FROM arm32v7/node
+
+ENV MOUNT alcazar
+
 RUN apt-get update
-RUN apt-get install -y wget libpopt0 python-crypto samba samba-common
+RUN apt-get install -y \
+      wget fuse \
+      libpopt0 python-crypto samba samba-common \
+      nfs-utils
+      
 RUN mkdir /rclone && mkdir /mount/
 RUN wget https://downloads.rclone.org/rclone-current-linux-arm.deb
 RUN dpkg -i rclone-current-linux-arm.deb
-CMD rclone mount -vv alcazar: /alcazar \
+CMD rclone mount -vv ${MOUNT}: /mount/${MOUNT} \
         --config /rclone/rclone.conf \
         --allow-other --uid 33 --gid 33 --allow-non-empty \
         --checkers 3 \
@@ -26,10 +33,16 @@ ENTRYPOINT ["/usr/local/lib/node_modules/cloudcmd/bin/cloudcmd.js"]
 docker run  -it -d \
     --name cloudcmd \
     --privileged 
-    -p 139:139 -p 445:445 \
+    -p 139:139 \
+    -p 445:445 \
     -p 2049:2049 \
     -p 8000:8000 \
-    -v rclone.conf:/rclone/rclone.conf \
+    -p 111:111 -p 111:111/udp \
+    -p 2049:2049 -p 2049:2049/udp \
+    -p 32765:32765 -p 32765:32765/udp \
+    -p 32766:32766 -p 32766:32766/udp \
+    -p 32767:32767 -p 32767:32767/udp \
+    -v alcazar:/alcazar \
     -v smb.conf:/etc/smb/smb.conf
     -v hosts:/etc/
     -v 
