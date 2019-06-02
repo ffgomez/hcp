@@ -6,9 +6,9 @@ ENV MOUNT alcazar
 
 RUN apt-get update
 RUN apt-get install -y \
-      wget fuse \
+      apt-utils wget fuse \
       libpopt0 python-crypto samba samba-common \
-      nfs-utils
+      nfs-common
       
 RUN mkdir /rclone && mkdir /mount/
 RUN wget https://downloads.rclone.org/rclone-current-linux-arm.deb
@@ -55,3 +55,15 @@ docker run  -it -d \
     cloudcmd
 
 Alcazar
+
+
+[Download]
+comment = GoogleDrive Mount
+path = /home/administrator/download
+browsable = yes
+writable = yes
+read only = no
+guest ok = no
+write list = administrator
+read list = administrator
+valid users = administrator
