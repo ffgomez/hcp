@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  rclone:
+    image: jaymoulin/jdownloader
+    ports:
+      - 80:80
+    environment:
+      TZ: Europe/Madrid
+    volumes:
+      - jdownloader_downloads:/root/Downloads
+      - jdownloader_config: /opt/JDownloader/cfg
+      
+  nfs
+  smb
+  cloudcmd
+
+volumes:
+  jdownloader_downloads:
+  jdownloader_config:
