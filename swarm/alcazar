@@ -54,38 +54,6 @@ ENTRYPOINT exec rclone mount -vv \
 
 
 
-
-ENTRYPOINT ["rclone", "mount", "-vv", \
-        "${RMOUNT}:", "/rclone/mount/${RMOUNT}", \
-        "--config", "/rclone/rclone.conf", \
-        "--allow-other", "--uid", "${RUID}", "--gid", "${RUID}", "--allow-non-empty", \
-        "--checkers", "${RCHECKERS}", \
-        "--tpslimit", "${RCHECKERS}", \
-        "--transfers", "${RCHECKERS}", \
-        # vfs OPTS
-        "--vfs-cache-mode", "full", \
-        "--cache-dir", "/rclone/cache", \
-        "--vfs-cache-max-age", "48h", \
-        "--vfs-cache-poll-interval", "10h", \
-        "--vfs-cache-max-size", "1G", \
-        "--vfs-read-chunk-size", "10M", \
-        "--vfs-read-chunk-size-limit", "off", \
-        "--timeout", "1h", \
-        "--dir-cache-time", "96h", \
-        "--buffer-size", "256M", \
-        "--drive-chunk-size", "32M" \
-        ## Cache OPTS
-        #"--cache-remote", "${RMOUNT}",
-        #"--cache-info-age", "90h",
-        #"--cache-chunk-size", "0M",
-        #"--cache-chunk-total-size", "1G",
-        #"--cache-db-path", "/rclone/cache.db",
-        #"--cache-chunk-path", "/rclone/chunk",
-        #"--cache-tmp-upload-path", "/rclone/upload",
-        #"--cache-tmp-wait-time", "1h"
-        ]
-
-
 # Local volume mount hierarchy
  rclone/
    rclone.conf
@@ -98,103 +66,25 @@ ENTRYPOINT ["rclone", "mount", "-vv", \
      torrent/
 
 docker run -it -d \
-  --privileged \
   --name rclone \
-  --device "/dev/fuse:/dev/fuse" \
+  --cap-add SYS_ADMIN \
+  --device /dev/fuse \
+  --security-opt apparmor:unconfined \
   -e "RMOUNT:alcazar" \
-  -v "rclone:/rclone" \
+  -v "rclone:/rclone:shared" \
  rclone
-      
-      
-version: '2'
 
-services:
-  rclone:
-    image: tynor88/rclone-mount:dev
-    #privileged: true
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    devices:
-      - "/dev/fuse:/dev/fuse"
-    environment:
-      - PLATFORM_ARCH="arm"
-    volumes:
-      - rclone:/data
-
-version: '2'
-
-services:
-  rclone:
-    image: rclone
-    #privileged: true
-    cap_add:
-      - SYS_ADMIN
-    security_opt:
-      - apparmor:unconfined
-    devices:
-      - "/dev/fuse:/dev/fuse"
-    environment:
-      RMOUNT: alcazar
-    volumes:
-      - "rclone:/rclone"
-
- 
-  nfs:
-    image: itsthenetwork/nfs-server-alpine:latest-arm
-    privileged: true
-    ports:
-      - 2049:2049
-    environment:
-      SHARED_DIRECTORY: /nfsshare
-    volumes:
-      - alcazar:/nfsshare
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=rclone"
-      - "traefik.docker.network=londres.back"
-      - "traefik.frontend.rule=Host:rclone.londres.casa"
-      - "traefik.port=3000"
-    
-    
+--mount type=bind,source=/media/alcazar,target=/rclone \      
+   --privileged \ 
+     --device "/dev/fuse:/dev/fuse" \
       
-  smb
-      image: rclone-mount
-    ports:
-      - "80:80"
-    environment:
-      TZ: Europe/Madrid
-    volumes:
-      - jdownloader_downloads:/root/Downloads
-      - jdownloader_config: /opt/JDownloader/cfg
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=rclone"
-      - "traefik.docker.network=londres.back"
-      - "traefik.frontend.rule=Host:rclone.londres.casa"
-      - "traefik.port=3000"
-      
-      
-  
-  cloudcmd
-    image: rclone-mount
-    ports:
-      - "80:80"
-    environment:
-      TZ: Europe/Madrid
-    volumes:
-      - jdownloader_downloads:/root/Downloads
-      - jdownloader_config: /opt/JDownloader/cfg
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=rclone"
-      - "traefik.docker.network=londres.back"
-      - "traefik.frontend.rule=Host:rclone.londres.casa"
-      - "traefik.port=3000"
-      
-      
-      
-volumes:
-  jdownloader_downloads:
-  jdownloader_config:
+docker run -d 
+    --name rclone \
+    --cap-add SYS_ADMIN \
+    --device /dev/fuse \
+    --security-opt apparmor:unconfined \
+    -e RemotePath="alcazar:" \
+    -e MountCommands="--allow-other --allow-non-empty" \
+    -v /storage/.config/rclone/rclone.conf:/config \
+    -v alcazar:/mnt/mediaefs:shared \
+    rclone-mount      
