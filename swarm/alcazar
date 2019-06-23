@@ -2,19 +2,75 @@ version: '2'
 
 services:
   rclone:
-    image: jaymoulin/jdownloader
+    image: rclone-mount
+    privileged: true
+    environment:
+      remote_mount: alcazar
+    volumes:
+      - alcazar:/mnt/
+      - rclone_cache:/root/Downloads
+      - rclone_upload:/opt/JDownloader/cfg
+      - /dev/fuse:/dev/fuse
+    secret
+      - rclone_config:
+ 
+ 
+
+ 
+  nfs:
+    image: itsthenetwork/nfs-server-alpine:latest-arm
+    privileged: true
     ports:
-      - 80:80
+      - 2049:2049
+    environment:
+      SHARED_DIRECTORY: /nfsshare
+    volumes:
+      - alcazar:/nfsshare
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=rclone"
+      - "traefik.docker.network=londres.back"
+      - "traefik.frontend.rule=Host:rclone.londres.casa"
+      - "traefik.port=3000"
+    
+    
+      
+  smb
+      image: rclone-mount
+    ports:
+      - "80:80"
     environment:
       TZ: Europe/Madrid
     volumes:
       - jdownloader_downloads:/root/Downloads
       - jdownloader_config: /opt/JDownloader/cfg
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=rclone"
+      - "traefik.docker.network=londres.back"
+      - "traefik.frontend.rule=Host:rclone.londres.casa"
+      - "traefik.port=3000"
       
-  nfs
-  smb
+      
+  
   cloudcmd
-
+    image: rclone-mount
+    ports:
+      - "80:80"
+    environment:
+      TZ: Europe/Madrid
+    volumes:
+      - jdownloader_downloads:/root/Downloads
+      - jdownloader_config: /opt/JDownloader/cfg
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=rclone"
+      - "traefik.docker.network=londres.back"
+      - "traefik.frontend.rule=Host:rclone.londres.casa"
+      - "traefik.port=3000"
+      
+      
+      
 volumes:
   jdownloader_downloads:
   jdownloader_config:
