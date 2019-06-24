@@ -1,13 +1,13 @@
 # Local volume mount hierarchy
- rclone/ 
-   rclone.conf 
-   cache.db 
-   cache/ 
-   chunk/ 
-   upload/
-   mount/
-     "${RMOUNT}"/ 
-     torrent/ 
+ rclone/ \
+   rclone.conf \ 
+   cache.db \
+   cache/ \
+   chunk/ \
+   upload/ \
+   mount/ \
+     "${RMOUNT}"/ \ 
+     torrent/ \
 
 
 # Docker run
