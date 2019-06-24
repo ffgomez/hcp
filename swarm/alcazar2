@@ -71,14 +71,16 @@ docker run -it -d \
   --device /dev/fuse \
   --security-opt apparmor:unconfined \
   -e "RMOUNT:alcazar" \
-  -v "rclone:/rclone:shared" \
+  -v "rclone:/rclone" \
+  -p 8001:8000 \
  rclone
 
+ -v "rclone:/rclone:shared" \
 --mount type=bind,source=/media/alcazar,target=/rclone \      
    --privileged \ 
      --device "/dev/fuse:/dev/fuse" \
       
-docker run -d 
+docker run -d \
     --name rclone \
     --cap-add SYS_ADMIN \
     --device /dev/fuse \
