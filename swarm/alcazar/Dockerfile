@@ -28,7 +28,8 @@ RUN npm i cloudcmd -g
 
 ## Install samba + nfs 
 RUN apt-get install -y libpopt0 python-crypto 
-RUN apt-get install -y samba samba-common 
+RUN apt-get install -y samba 
+RUN apt-get install -y samba-common 
 RUN apt-get install -y nfs-common
 
 ## Add entrypoint
