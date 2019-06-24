@@ -25,10 +25,10 @@ rclone mount -vv \
 /usr/local/lib/node_modules/cloudcmd/bin/cloudcmd.js --root /rclone/mount 
 
 # NFS server
+#service nfs-kernel-server restart
 
 # SMB server
-
-
+#
 
 ##Opciones futuras
         ## Cache OPTS
