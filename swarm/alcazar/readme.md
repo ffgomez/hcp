@@ -25,6 +25,5 @@ docker run -it -d \
 # Descartes
  -v "rclone:/rclone:shared" \
 --mount type=bind,source=/media/alcazar,target=/rclone \      
-   --privileged \ 
+   --privileged \
      --device "/dev/fuse:/dev/fuse" \
-          
