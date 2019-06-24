@@ -47,20 +47,20 @@ CMD mkdir -p /rclone/mount/${RMOUNT}
 CMD echo "/rclone/mount/ *(ro,fsid=0,insecure,no_subtree_check,async)" >> /etc/exports
 
 ## smb
-CMD cat <<EOT >> /etc/samba/smb.conf
-[global]
-	workgroup = ${SWG}
-	security = user
-	passdb backend = tdbsam
-	encrypt passwords = yes
-
-[${RMOUNT}]
-	comment = alcazar mounts
-	path = /rclone/mount/
-	public = no
-	writable = no
-	printable = no
-	write list = rw
+CMD cat <<EOT >> /etc/samba/smb.conf \
+[global] \
+	workgroup = ${SWG} \
+	security = user \
+	passdb backend = tdbsam \
+	encrypt passwords = yes \
+\
+[${RMOUNT}] \
+	comment = alcazar mounts \
+	path = /rclone/mount/ \
+	public = no \
+	writable = no \
+	printable = no \
+	write list = rw \
 EOT
 
   
