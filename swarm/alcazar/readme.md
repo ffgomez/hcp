@@ -1,4 +1,4 @@
-# Local volume mount hierarchy
+## Local volume mount hierarchy
 ```
  rclone/ 
    rclone.conf 
@@ -12,7 +12,8 @@
 ```
 
 
-# Docker run
+## Docker run
+rclone
 ```
 docker run -it -d \
   --name rclone \
@@ -25,14 +26,14 @@ docker run -it -d \
  rclone
 ```
 
-# Descartes
+## Descartes
 ```
- -v "rclone:/rclone:shared" \
+-v "rclone:/rclone:shared" \
  
 --mount type=bind,source=/media/alcazar,target=/rclone \
 
-   --privileged \
+--privileged \
    
-     --device "/dev/fuse:/dev/fuse" \
+--device "/dev/fuse:/dev/fuse" \
      
 ```
