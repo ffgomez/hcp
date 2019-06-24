@@ -8,7 +8,7 @@
    upload/ 
    mount/ 
      "${RMOUNT}"/  
-     torrent/ 
+     download/ 
 ```
 
 
