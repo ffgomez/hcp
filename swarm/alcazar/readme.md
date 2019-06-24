@@ -1,5 +1,5 @@
 # Local volume mount hierarchy
- '''
+```
  rclone/ 
    rclone.conf 
    cache.db 
@@ -9,10 +9,11 @@
    mount/ 
      "${RMOUNT}"/  
      torrent/ 
- '''
+```
 
 
 # Docker run
+```
 docker run -it -d \
   --name rclone \
   --cap-add SYS_ADMIN \
@@ -22,10 +23,16 @@ docker run -it -d \
   -v "rclone:/rclone" \
   -p 8001:8000 \
  rclone
-
+```
 
 # Descartes
+```
  -v "rclone:/rclone:shared" \
---mount type=bind,source=/media/alcazar,target=/rclone \      
+ 
+--mount type=bind,source=/media/alcazar,target=/rclone \
+
    --privileged \
+   
      --device "/dev/fuse:/dev/fuse" \
+     
+```
