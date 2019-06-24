@@ -1,10 +1,20 @@
 FROM arm32v7/node
 
+###################
+## ENV           ##
+###################
 ## Rclone configurations
 ENV RMOUNT=alcazar
 ENV RCHECKERS=3
 ENV RUID=1000
+#VOLUME /rclone/mount/${RMOUNT}
 
+## SMB conf
+ENV 
+
+###################
+## INSTALL       ##
+###################
 ## Install dependences and samba+nfs
 RUN apt-get update
 RUN apt-get install -y apt-utils wget fuse 
@@ -21,9 +31,38 @@ RUN apt-get install -y libpopt0 python-crypto
 RUN apt-get install -y samba samba-common 
 RUN apt-get install -y nfs-common
 
-## Setup the dependences for the remote mount
-CMD mkdir -p /rclone/mount/${RMOUNT}
+## Add entrypoint
+ADD alcazar.sh /root/alcazar.sh
+
+###################
+## CONFIG        ##
+###################
+## cloudcmd 
 EXPOSE 8000
 
+## rclone
+CMD mkdir -p /rclone/mount/${RMOUNT}
+
+## nfs
+CMD echo "/rclone/mount/ *(ro,fsid=0,insecure,no_subtree_check,async)" >> /etc/exports
+
+## smb
+CMD cat <<EOT >> /etc/samba/smb.conf
+[global]
+	workgroup = ${}
+	security = user
+	passdb backend = tdbsam
+	encrypt passwords = yes
+
+[${RMOUNT}]
+	comment = alcazar mounts
+	path = /rclone/mount/
+	public = no
+	writable = no
+	printable = no
+	write list = rw
+EOT
+
+  
 ## Create rclone mount with cloudcmd + nfs + smb
-ENTRYPOINT exec alcazar.sh
+ENTRYPOINT exec /root/alcazar.sh
