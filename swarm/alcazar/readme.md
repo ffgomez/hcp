@@ -23,7 +23,7 @@ docker run -it -d \
   -e "RMOUNT:alcazar" \
   -v "rclone:/rclone" \
   -p 8001:8000 \
- rclone
+  rclone
 ```
 
 ## Descartes
