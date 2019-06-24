@@ -11,29 +11,16 @@
      download/ 
 ```
 
-
-## Docker run
-rclone
+## mumie
 ```
-docker run -it -d \
-  --name rclone \
-  --cap-add SYS_ADMIN \
-  --device /dev/fuse \
-  --security-opt apparmor:unconfined \
-  -e "RMOUNT:alcazar" \
-  -v "rclone:/rclone" \
-  -p 8001:8000 \
-  rclone
-```
-
-## Descartes
-```
--v "rclone:/rclone:shared" \
- 
---mount type=bind,source=/media/alcazar,target=/rclone \
-
---privileged \
-   
---device "/dev/fuse:/dev/fuse" \
-     
+docker run -d --name rclone-mount \
+    --restart=unless-stopped \
+    --cap-add SYS_ADMIN \
+    --device /dev/fuse \
+    --security-opt apparmor:unconfined \
+    -e RemotePath="alcazar:" \
+    -e MountCommands="--allow-other --allow-non-empty" \
+    -v  /storage/.config/rclone:/config \
+    -v /media/alcazar:/mnt/mediaefs:shared \
+    mumie/rclone-mount
 ```
