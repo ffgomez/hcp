@@ -10,7 +10,7 @@ ENV RUID=1000
 #VOLUME /rclone/mount/${RMOUNT}
 
 ## SMB conf
-ENV 
+ENV SWG londres.casa
 
 ###################
 ## INSTALL       ##
@@ -49,7 +49,7 @@ CMD echo "/rclone/mount/ *(ro,fsid=0,insecure,no_subtree_check,async)" >> /etc/e
 ## smb
 CMD cat <<EOT >> /etc/samba/smb.conf
 [global]
-	workgroup = ${}
+	workgroup = ${SWG}
 	security = user
 	passdb backend = tdbsam
 	encrypt passwords = yes
