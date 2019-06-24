@@ -32,7 +32,7 @@ RUN apt-get install -y samba samba-common
 RUN apt-get install -y nfs-common
 
 ## Add entrypoint
-ADD alcazar.sh /root/alcazar.sh
+COPY alcazar.sh /root/alcazar.sh
 
 ###################
 ## CONFIG        ##
@@ -47,22 +47,9 @@ CMD mkdir -p /rclone/mount/${RMOUNT}
 CMD echo "/rclone/mount/ *(ro,fsid=0,insecure,no_subtree_check,async)" >> /etc/exports
 
 ## smb
-CMD cat <<EOT >> /etc/samba/smb.conf \
-[global] \
-	workgroup = ${SWG} \
-	security = user \
-	passdb backend = tdbsam \
-	encrypt passwords = yes \
-\
-[${RMOUNT}] \
-	comment = alcazar mounts \
-	path = /rclone/mount/ \
-	public = no \
-	writable = no \
-	printable = no \
-	write list = rw \
-EOT
-
+COPY smb.conf /etc/samba/smb.conf 
   
-## Create rclone mount with cloudcmd + nfs + smb
+###################
+## ENTRYPOINT    ##
+###################
 ENTRYPOINT exec /root/alcazar.sh
