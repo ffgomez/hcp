@@ -1,27 +1,52 @@
-version: '3'
+version: '3.6'
 
 services:
   portainer:
     image: portainer/portainer
     ports:
-      - "9000:9000"
+      - "9001:9000"
+    networks:
+      - agent
     command: -H unix:///var/run/docker.sock
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - /media/londres/global/data/portainer:/data
 
-volumes:
-  portainer_data:
+  agent:
+    image: portainer/agent
+    environment:
+      AGENT_CLUSTER_ADDR: tasks.agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - agent
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+networks:
+  agent:
+    driver: overlay
+    attachable: false
+    
+    
+    
+    3#####
 
 
 docker run -d \
-    --name portainer \
+    --name portainer_test \
+    -p 9009:9000 \
+    --privileged \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /media/londres/global/data/portainer:/data \
+    portainer/portainer
+    
+    
+    
     --label traefik.backend=portainer \
     --label traefik.port=9000 \
     --label traefik.frontend.rule="Host:portainer.londres.casa" \
     --label traefik.frontend.entryPoints=http \
-    -p 9000:9000 \
-    --privileged \
-    -v /var/run/docker.sock:/var/run/docker.sock \
-    -v portainer_data:/data \
-    portainer/portainer
