@@ -1,15 +1,15 @@
 docker run -d \
-  --hostname gitlab.example.com \
+  --hostname gitlab.londres.casa \
   -p 44388:443 \
   -p 8189:80 \
   -p 2288:22 \
   --name gitlab \
   --restart always \
-  -v gitlab_config:/etc/gitlab \
-  -v gitlab_logs:/var/log/gitlab \
-  -v gitlab_data:/var/opt/gitlab \
+  -v /media/londres/global/config/gitlab:/etc/gitlab \
+  -v /media/londres/global/data/gitlab/logs:/var/log/gitlab \
+  -v /media/londres/global/data/gitlab/data:/var/opt/gitlab \
   --label traefik.backend=gitlab \
-  --label traefik.port=8189 \
+  --label traefik.port=80 \
   --label traefik.frontend.rule="Host:gitlab.londres.casa" \
   --label traefik.frontend.entryPoints=http \
   ulm0/gitlab
@@ -24,3 +24,4 @@ docker run  -it -d \
     --label traefik.frontend.rule="Host:cloud9.londres.casa" \
     --label traefik.frontend.entryPoints=http \
     hwegge2/rpi-cloud9-ide node server.js -w/workspace --listen 0.0.0.0 -a :
+  
