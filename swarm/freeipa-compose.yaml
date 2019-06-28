@@ -11,7 +11,6 @@ services:
       #- SYS_ADMIN
     environment:
       IPA_SERVER_IP: 192.168.1.160
-      #PASSWORD: FLXfbi82..
       TZ: Europe/Madrid
       #DEBUG_TRACE: 1
       #DEBUG_NO_EXIT: 1
