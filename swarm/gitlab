@@ -1,16 +1,41 @@
 docker run -d \
   --hostname gitlab.londres.casa \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.londres.casa/'; gitlab_rails['lfs_enabled'] = true;" \
   -p 44388:443 \
   -p 8189:80 \
   -p 2288:22 \
   --name gitlab \
   --restart always \
-  -v /storage/londres/global/config/gitlab:/etc/gitlab:Z \
-  -v /storage/londres/global/data/gitlab/logs:/var/log/gitlab:Z \
-  -v /storage/londres/global/data/gitlab/data:/var/opt/gitlab:Z \
-  -v /storage/londres/global/data/gitlab/embedded:/opt/gitlab/embedded:Z \
+  -v gitlab_config:/etc/gitlab:Z \
+  -v gitlab_logs:/var/log/gitlab:Z \
+  -v gitlab_data:/var/opt/gitlab:Z \
   --label traefik.backend=gitlab \
   --label traefik.port=80 \
   --label traefik.frontend.rule="Host:gitlab.londres.casa" \
   --label traefik.frontend.entryPoints=http \
   ulm0/gitlab
+
+docker run  \
+  --hostname gitlab.londres.casa \
+  --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.londres.casa/'; gitlab_rails['lfs_enabled'] = true;" \
+  -p 44388:443 \
+  -p 8189:80 \
+  -p 2288:22 \
+  --name gitlab-reparar \
+  --restart always \
+  -v gitlab_config:/etc/gitlab:Z \
+  -v gitlab_logs:/var/log/gitlab:Z \
+  -v gitlab_data:/var/opt/gitlab:Z \
+  --label traefik.backend=gitlab \
+  --label traefik.port=80 \
+  --label traefik.frontend.rule="Host:gitlab.londres.casa" \
+  --label traefik.frontend.entryPoints=http \
+  ulm0/gitlab update-permissions
+
+
+
+
+  -v /storage/londres/global/config/gitlab:/etc/gitlab:Z \
+  -v /storage/londres/global/data/gitlab/logs:/var/log/gitlab:Z \
+  -v /storage/londres/global/data/gitlab/data:/var/opt/gitlab:Z \
+  -v /storage/londres/global/data/gitlab/embedded:/opt/gitlab/embedded:Z \
