@@ -5,9 +5,9 @@ docker run -d \
   -p 2288:22 \
   --name gitlab \
   --restart always \
-  -v /media/londres/global/config/gitlab:/etc/gitlab \
-  -v /media/londres/global/data/gitlab/logs:/var/log/gitlab \
-  -v /media/londres/global/data/gitlab/data:/var/opt/gitlab \
+  -v /storage/londres/global/config/gitlab:/etc/gitlab \
+  -v /storage/londres/global/data/gitlab/logs:/var/log/gitlab \
+  -v /storage/londres/global/data/gitlab/data:/var/opt/gitlab \
   --label traefik.backend=gitlab \
   --label traefik.port=80 \
   --label traefik.frontend.rule="Host:gitlab.londres.casa" \
