@@ -8,7 +8,7 @@ docker run -d \
   -v /storage/londres/global/config/gitlab:/etc/gitlab:Z \
   -v /storage/londres/global/data/gitlab/logs:/var/log/gitlab:Z \
   -v /storage/londres/global/data/gitlab/data:/var/opt/gitlab:Z \
-  -v /storage/londres/global/data/gitlab/embedded:/opt/gitlab/embedded:Z |
+  -v /storage/londres/global/data/gitlab/embedded:/opt/gitlab/embedded:Z \
   --label traefik.backend=gitlab \
   --label traefik.port=80 \
   --label traefik.frontend.rule="Host:gitlab.londres.casa" \
