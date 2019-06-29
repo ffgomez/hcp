@@ -20,6 +20,7 @@ CMD ["/go/bin/mos"]
     # docker run -d \
     --name mos \
     -v /dev/ttyUSB0:/dev/ttyUSB0 \
+    -v /storage/londres/global/data/mos:/mos \
     -p 1992:1992 \
     --privileged \
     --label traefik.backend=mongoose \
