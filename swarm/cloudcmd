@@ -1,3 +1,26 @@
+FROM arm32v7/node
+RUN npm i cloudcmd -g
+EXPOSE 8000
+ENTRYPOINT /usr/local/lib/node_modules/cloudcmd/bin/cloudcmd.js --root /mnt/
+
+docker run  -it -d \
+    --name cloudcmd \
+    -p 8000:8000 \
+    --privileged \
+    -v /media/almacen/torrent:/mnt/torrent \
+    -v /storage/alcazar/:/mnt/alcazar \
+    --label traefik.backend=cloudcmd \
+    --label traefik.port=8000 \
+    --label traefik.frontend.rule="Host:cloudcmd.londres.casa" \
+    --label traefik.frontend.entryPoints=http \
+    cloudcmd
+
+
+
+
+
+
+
 Dockerfile 
 
 FROM arm32v7/node
